@@ -2911,7 +2911,10 @@ mark.search-keyword {
 .post-block {
   background: var(--content-bg-color);
 }
-.post-footer {
+#valine-comments {
+  background: var(--content-bg-color);
+}
+.post-eof {
   display: none;
 }
 .post-title-link {
