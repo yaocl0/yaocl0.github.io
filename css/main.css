@@ -1861,8 +1861,8 @@ img:hover {
   visibility: hidden;
 }
 .posts-collapse .post-content {
-  margin-bottom: 35px;
-  margin-left: 35px;
+  margin-bottom: 0px;
+  margin-left: 0px;
   position: relative;
 }
 @media (max-width: 767px) {
