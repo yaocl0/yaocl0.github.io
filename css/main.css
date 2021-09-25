@@ -2928,6 +2928,9 @@ mark.search-keyword {
   padding: 40px;
   border-radius: 8px;
 }
+.vpower {
+  display: none;
+}
 @media (max-width: 767px) {
   .pagination {
     margin-bottom: 10px;
