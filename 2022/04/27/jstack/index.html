@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta name="baidu-site-verification" content="code-cQUdBrVjwx" />
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css" integrity="sha256-mUZM63G8m73Mcidfrv5E+Y61y7a12O5mW4ezU3bxqW4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/themes/blue/pace-theme-minimal.css">
+  <script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js" integrity="sha256-gqd7YTjg/BtfqWSwsJOvndl0Bxc8gFImLEkXQT8+qj0=" crossorigin="anonymous"></script>
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"yaocl.cn","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.7.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":true,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/db.json","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+<meta name="description" content="Java工具 Jstack 的使用 jstack - Prints Java thread stack traces for a Java process, core file, or remote debug server.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java工具 Jstack 的使用">
+<meta property="og:url" content="http://yaocl.cn/2022/04/27/jstack/index.html">
+<meta property="og:site_name" content="Yao">
+<meta property="og:description" content="Java工具 Jstack 的使用 jstack - Prints Java thread stack traces for a Java process, core file, or remote debug server.">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://yaocl.cn/2022/04/27/jstack/top.png">
+<meta property="og:image" content="http://yaocl.cn/2022/04/27/jstack/top-Hp.png">
+<meta property="og:image" content="http://yaocl.cn/2022/04/27/jstack/run0.png">
+<meta property="article:published_time" content="2022-04-27T09:28:24.000Z">
+<meta property="article:modified_time" content="2022-04-27T09:32:51.269Z">
+<meta property="article:author" content="Mr_Yao">
+<meta property="article:tag" content="JAVA">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://yaocl.cn/2022/04/27/jstack/top.png">
+
+
+<link rel="canonical" href="http://yaocl.cn/2022/04/27/jstack/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://yaocl.cn/2022/04/27/jstack/","path":"2022/04/27/jstack/","title":"Java工具 Jstack 的使用"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Java工具 Jstack 的使用 | Yao</title>
+  
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="Yao" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">Yao</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+        <li class="menu-item menu-item-message"><a href="/message/" rel="section"><i class="fa fa fa-comments fa-fw"></i>留言板</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Java%E5%B7%A5%E5%85%B7-Jstack-%E7%9A%84%E4%BD%BF%E7%94%A8"><span class="nav-number">1.</span> <span class="nav-text">Java工具 Jstack 的使用</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Mr_Yao"
+      src="/images/avatar.gif">
+  <p class="site-author-name" itemprop="name">Mr_Yao</p>
+  <div class="site-description" itemprop="description">一只努力向上的小菜鸟</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">17</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yaocl.cn/2022/04/27/jstack/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Mr_Yao">
+      <meta itemprop="description" content="一只努力向上的小菜鸟">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yao">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Java工具 Jstack 的使用
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2022-04-27 17:28:24 / 修改时间：17:32:51" itemprop="dateCreated datePublished" datetime="2022-04-27T17:28:24+08:00">2022-04-27</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/JAVA/" itemprop="url" rel="index"><span itemprop="name">JAVA</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+  
+  <span class="post-meta-item">
+    
+    <span class="post-meta-item-icon">
+      <i class="far fa-comment"></i>
+    </span>
+    <span class="post-meta-item-text">Valine：</span>
+  
+    <a title="valine" href="/2022/04/27/jstack/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2022/04/27/jstack/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>4.6k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>4 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h3 id="Java工具-Jstack-的使用"><a href="#Java工具-Jstack-的使用" class="headerlink" title="Java工具 Jstack 的使用"></a>Java工具 Jstack 的使用</h3><blockquote>
+<p>jstack - Prints Java thread stack traces for a Java process, core file, or remote debug server.</p>
+</blockquote>
+<span id="more"></span>
+
+<p>Jstack主要的作用是生成当前进程中所有线程的信息，也就是当前时刻JVM的线程快照，通过线程的信息我们可以定位到程序中出现长时间停顿、CPU占用率过高等问题。</p>
+<p>线程快照中的信息是当前java虚拟机内每一条线程正在执行的方法的堆栈集合，有了堆栈信息我们就可以分析出我们的程序问题出现在哪，比如线程间死锁、外部资源请求时间过长、死循环等。</p>
+<p>使用：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">jstack [ options ] pid</span><br><span class="line"></span><br><span class="line">jstack [ options ] executable core</span><br><span class="line"></span><br><span class="line">jstack [ options ] [ server-id@ ] remote-hostname-or-IP</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">OPTIONS</span><br><span class="line">       -F</span><br><span class="line">              Force a stack dump when jstack [-l] pid does not respond.</span><br><span class="line"></span><br><span class="line">       -l</span><br><span class="line">              Long listing. Prints additional information about locks such as a list of owned java.util.concurrent ownable synchronizers. See the</span><br><span class="line">              AbstractOwnableSynchronizer class description at</span><br><span class="line">              http://docs.oracle.com/javase/8/docs/api/java/util/concurrent/locks/AbstractOwnableSynchronizer.html</span><br><span class="line"></span><br><span class="line">       -m</span><br><span class="line">              Prints a mixed mode stack trace that has both Java and native C/C++ frames.</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>-F  当正常的请求不被响应时，强制输出堆栈信息。</li>
+<li>-l  额外打印锁的信息，当发生死锁时可以查看锁的信息</li>
+<li>-m 如果调用本地方法栈的信息，可以打印C/C++的堆栈</li>
+</ul>
+<p>以一个发生死锁的例子来看一下使用Jstack查看到的信息</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Jstack</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> Object obj1 = <span class="keyword">new</span> Object();</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> Object obj2 = <span class="keyword">new</span> Object();</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">new</span> Thread(() -&gt; &#123;</span><br><span class="line">            <span class="keyword">synchronized</span> (obj1) &#123;</span><br><span class="line">                <span class="keyword">try</span> &#123;</span><br><span class="line">                    Thread.sleep(<span class="number">2000</span>);</span><br><span class="line">                &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">                    e.printStackTrace();</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">synchronized</span> (obj2) &#123;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;).start();</span><br><span class="line">        <span class="keyword">new</span> Thread(() -&gt; &#123;</span><br><span class="line">            <span class="keyword">synchronized</span> (obj2) &#123;</span><br><span class="line">                <span class="keyword">try</span> &#123;</span><br><span class="line">                    Thread.sleep(<span class="number">2000</span>);</span><br><span class="line">                &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">                    e.printStackTrace();</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">synchronized</span> (obj1) &#123;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;).start();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>上面代码中，第一个线程拿到obj1的锁，等待obj2的锁，第二个线程拿到obj2的锁，等待obj1的锁，这样就会发生死锁。</p>
+<p>先通过<code>jps</code>命令获取到先拿到当前的进程pid，然后通过jstack获取线程的信息。可以看到有两个线程都处于阻塞状态。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">&quot;Thread-1&quot; #12 prio=5 os_prio=0 tid=0x00007fdff871c800 nid=0x3cc2 waiting for monitor entry [0x00007fdfce0fc000]</span><br><span class="line">   java.lang.Thread.State: BLOCKED (on object monitor)</span><br><span class="line">	at com.example.demo.jstack.Jstack.lambda$main$1(Jstack.java:36)</span><br><span class="line">	- waiting to lock &lt;0x000000076e925a90&gt; (a java.lang.Object)</span><br><span class="line">	- locked &lt;0x000000076e925aa0&gt; (a java.lang.Object)</span><br><span class="line">	at com.example.demo.jstack.Jstack$$Lambda$2/2052001577.run(Unknown Source)</span><br><span class="line">	at java.lang.Thread.run(Thread.java:748)</span><br><span class="line"></span><br><span class="line">&quot;Thread-0&quot; #11 prio=5 os_prio=0 tid=0x00007fdff871a800 nid=0x3cc1 waiting for monitor entry [0x00007fdfce1fc000]</span><br><span class="line">   java.lang.Thread.State: BLOCKED (on object monitor)</span><br><span class="line">	at com.example.demo.jstack.Jstack.lambda$main$0(Jstack.java:25)</span><br><span class="line">	- waiting to lock &lt;0x000000076e925aa0&gt; (a java.lang.Object)</span><br><span class="line">	- locked &lt;0x000000076e925a90&gt; (a java.lang.Object)</span><br><span class="line">	at com.example.demo.jstack.Jstack$$Lambda$1/1174361318.run(Unknown Source)</span><br><span class="line">	at java.lang.Thread.run(Thread.java:748)</span><br></pre></td></tr></table></figure>
+
+<p>第一行显示线程名、线程优先级、线程id、线程状态描述等信息</p>
+<p>第二行显示的是当前线程的状态</p>
+<p>​      Java中线程的状态分为NEW、RUNNABLE、BLOCKED、WATING、TIMED_WATING、TERMINATED，但是在快照中NEW状态是不会出现的。</p>
+<p>再下面的就是当前线程的调用栈的信息。调用栈中包含了锁的信息。</p>
+<p>​     <code>locked    </code>   表示使用synchronized申请对象锁成功,监视器的拥有者</p>
+<p>​     <code>waiting to lock </code>  表示使用synchronized申请对象锁未成功,进入等待区。</p>
+<p>​     <code>waiting on</code>    表示用synchronized申请对象锁成功后,调用了wait方法,进入对象的等待区等待。</p>
+<p>​    <code>parking to wait for</code>  park是基本的线程阻塞原语,不通过监视器在对象上阻塞。随concurrent包会出现的新的机制,与synchronized体系不同。</p>
+<p>在最后也显示出了代码中出现死锁的信息</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">Found one Java-level deadlock:</span><br><span class="line">=============================</span><br><span class="line">&quot;Thread-1&quot;:</span><br><span class="line">  waiting to lock monitor 0x00007fdfac006638 (object 0x000000076e925a90, a java.lang.Object),</span><br><span class="line">  which is held by &quot;Thread-0&quot;</span><br><span class="line">&quot;Thread-0&quot;:</span><br><span class="line">  waiting to lock monitor 0x00007fdfac003da8 (object 0x000000076e925aa0, a java.lang.Object),</span><br><span class="line">  which is held by &quot;Thread-1&quot;</span><br><span class="line"></span><br><span class="line">Java stack information for the threads listed above:</span><br><span class="line">===================================================</span><br><span class="line">&quot;Thread-1&quot;:</span><br><span class="line">	at com.example.demo.jstack.Jstack.lambda$main$1(Jstack.java:36)</span><br><span class="line">	- waiting to lock &lt;0x000000076e925a90&gt; (a java.lang.Object)</span><br><span class="line">	- locked &lt;0x000000076e925aa0&gt; (a java.lang.Object)</span><br><span class="line">	at com.example.demo.jstack.Jstack$$Lambda$2/2052001577.run(Unknown Source)</span><br><span class="line">	at java.lang.Thread.run(Thread.java:748)</span><br><span class="line">&quot;Thread-0&quot;:</span><br><span class="line">	at com.example.demo.jstack.Jstack.lambda$main$0(Jstack.java:25)</span><br><span class="line">	- waiting to lock &lt;0x000000076e925aa0&gt; (a java.lang.Object)</span><br><span class="line">	- locked &lt;0x000000076e925a90&gt; (a java.lang.Object)</span><br><span class="line">	at com.example.demo.jstack.Jstack$$Lambda$1/1174361318.run(Unknown Source)</span><br><span class="line">	at java.lang.Thread.run(Thread.java:748)</span><br><span class="line"></span><br><span class="line">Found 1 deadlock.</span><br></pre></td></tr></table></figure>
+
+
+
+<p>好了，熟悉了Jstack，我们用一段死循环的代码，通过Jstack来定位到使CPU占用100%的代码行</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">JstackDemo</span> </span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> Executor executor = Executors.newFixedThreadPool(<span class="number">3</span>);</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> Object lock = <span class="keyword">new</span> Object();</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        Task task1 = <span class="keyword">new</span> Task();</span><br><span class="line">        Task task2 = <span class="keyword">new</span> Task();</span><br><span class="line">        executor.execute(task1);</span><br><span class="line">        executor.execute(task2);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">Task</span> <span class="keyword">implements</span> <span class="title">Runnable</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            <span class="keyword">synchronized</span> (lock) &#123;</span><br><span class="line">                run0();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">run0</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            <span class="keyword">int</span> i = <span class="number">0</span>;</span><br><span class="line">            <span class="keyword">while</span> (<span class="keyword">true</span>) &#123;</span><br><span class="line">                i++;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<p>1、首先通过<code>top</code>查看到使CPU占用到100%的进程id</p>
+<p>  <img src="top.png"></p>
+<p>2、使用<code>top -Hp 进程id</code> 查看占用CPU最多的线程id</p>
+<p><img src="top-Hp.png"></p>
+<p>3、将线程id转换为16进制</p>
+<p> 17997 -&gt; 464d</p>
+<p>4、使用Jstack查看Java所在的进程，并找到相应的线程</p>
+<p><img src="run0.png"></p>
+
+    </div>
+
+    
+    
+    
+    
+        <br/>
+        <br/>
+        <div style="text-align:center;color: #ccc;font-size:15px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+      
+  <div class="popular-posts-header">相关文章推荐</div>
+  <ul class="popular-posts">
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2021/09/23/aqs1/" rel="bookmark">AbstractQueuedSynchronizer源码分析-共享式</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2021/09/23/aqs2/" rel="bookmark">AbstractQueuedSynchronizer源码分析-独占式</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2021/09/30/hashmap/" rel="bookmark">HashMap那些事儿</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2021/12/29/hot-loading/" rel="bookmark">设计一个支持热加载的Java应用启动器</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2021/09/23/introspector/" rel="bookmark">Java内省</a></div>
+    </li>
+  </ul>
+
+
+
+    <footer class="post-footer">
+          <div class="followme">
+  <span>欢迎关注我的其它发布渠道</span>
+
+  <div class="social-list">
+
+      <div class="social-item">
+        <a target="_blank" class="social-link" href="/images/wechat_channel.jpg">
+          <span class="icon">
+            <i class="fab fa-weixin"></i>
+          </span>
+
+          <span class="label">微信公众号</span>
+        </a>
+      </div>
+  </div>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/JAVA/" rel="tag"><i class="fa fa-tag"></i> JAVA</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/04/06/threadlocal/" rel="prev" title="ThreadLocal 内存泄露问题">
+                  <i class="fa fa-chevron-left"></i> ThreadLocal 内存泄露问题
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments" id="valine-comments"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Mr_Yao</span>
+</div>
+<div class="busuanzi-count">
+</div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+  <script src="/js/third-party/pace.js"></script>
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+
+<script class="next-config" data-name="valine" type="application/json">{"enable":true,"appId":"AVIIxANWoXSFTQBh9BkUuqYY-MdYXbMMI","appKey":"e40mu8mtAoQyf35HKVX27HbH","serverURLs":"https://aviixanw.api.lncldglobal.com","placeholder":"有什么问题，欢迎留言指正与交流...","avatar":"mm","meta":["nick","mail","link"],"pageSize":10,"lang":null,"visitor":false,"comment_count":false,"recordIP":false,"enableQQ":false,"requiredFields":[],"notify":true,"verify":false,"el":"#valine-comments","path":"/2022/04/27/jstack/"}</script>
+<script>
+document.addEventListener('page:loaded', () => {
+  NexT.utils.loadComments(CONFIG.valine.el)
+    .then(() => NexT.utils.getScript(
+      'https://cdn.jsdelivr.net/npm/valine@1.4.14/dist/Valine.min.js',
+      { condition: window.Valine }
+    ))
+    .then(() => {
+      new Valine(CONFIG.valine);
+    });
+});
+</script>
+
+</body>
+</html>
