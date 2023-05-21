@@ -1,29 +1,27 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-  <meta name="baidu-site-verification" content="code-cQUdBrVjwx" />
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width">
-<meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 5.4.0">
-
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 5.4.0">
 
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
   <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="google-site-verification" content="google-site-verification=MBUPLTqs-crTMrXutrEiB0jYb3zBMf1ua13kTbOEqY8">
+  <meta name="baidu-site-verification" content="codeva-0twjpjCbJ7">
 
 <link rel="stylesheet" href="/css/main.css">
 
 
 
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css" integrity="sha256-mUZM63G8m73Mcidfrv5E+Y61y7a12O5mW4ezU3bxqW4=" crossorigin="anonymous">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/themes/blue/pace-theme-minimal.css">
-  <script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js" integrity="sha256-gqd7YTjg/BtfqWSwsJOvndl0Bxc8gFImLEkXQT8+qj0=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
 
-<script class="next-config" data-name="main" type="application/json">{"hostname":"yaocl.cn","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.7.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":true,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/db.json","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
-<meta name="description" content="Java 泛型（generics）是JDK1.5中引入的一个新特性，其本质是参数化类型，解决不确定具体对象类型的问题;其所操作的数据类型被指定为一个参数（type parameter）这种参数类型可以用在类、接口和方法的创建中，分别称为泛型类、泛型接口、泛型方法。">
+<script class="next-config" data-name="main" type="application/json">{"hostname":"yaocl.cn","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.16.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"utterances","storage":true,"lazyload":false,"nav":null,"activeClass":"utterances"},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/db.json","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="Java 泛型（generics）是JDK1.5中引入的一个新特性，其本质是参数化类型，解决不确定具体对象类型的问题;其所操作的数据类型被指定为一个参数（type parameter）这种参数类型可以用在类、接口和方法的创建中，分别称为泛型类、泛型接口、泛型方法。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Java泛型中的类型擦除以及Type接口">
 <meta property="og:url" content="http://yaocl.cn/2021/11/15/type-erasure/index.html">
@@ -36,7 +34,7 @@
 <meta property="og:image" content="http://yaocl.cn/2021/11/15/type-erasure/4.png">
 <meta property="og:image" content="http://yaocl.cn/2021/11/15/type-erasure/5.png">
 <meta property="article:published_time" content="2021-11-15T08:18:29.000Z">
-<meta property="article:modified_time" content="2021-11-15T09:36:58.781Z">
+<meta property="article:modified_time" content="2023-05-19T11:42:56.590Z">
 <meta property="article:author" content="Mr_Yao">
 <meta property="article:tag" content="JAVA">
 <meta name="twitter:card" content="summary">
@@ -56,6 +54,10 @@
 
 
 
+
+
+
+
   <noscript>
     <link rel="stylesheet" href="/css/noscript.css">
   </noscript>
@@ -66,8 +68,8 @@
   <div class="headband"></div>
 
   <main class="main">
-    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
-      <div class="header-inner"><div class="site-brand-container">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
   <div class="site-nav-toggle">
     <div class="toggle" aria-label="切换导航栏" role="button">
         <span class="toggle-line"></span>
@@ -80,13 +82,13 @@
 
     <a href="/" class="brand" rel="start">
       <i class="logo-line"></i>
-      <h1 class="site-title">Yao</h1>
+      <p class="site-title">Yao</p>
       <i class="logo-line"></i>
     </a>
   </div>
 
   <div class="site-nav-right">
-    <div class="toggle popup-trigger">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
         <i class="fa fa-search fa-fw fa-lg"></i>
     </div>
   </div>
@@ -95,12 +97,7 @@
 
 
 <nav class="site-nav">
-  <ul class="main-menu menu">
-        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
-        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li>
-        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
-        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
-        <li class="menu-item menu-item-message"><a href="/message/" rel="section"><i class="fa fa fa-comments fa-fw"></i>留言板</a></li>
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li><li class="menu-item menu-item-message"><a href="/message/" rel="section"><i class="fa fa fa-comments fa-fw"></i>留言</a></li>
       <li class="menu-item menu-item-search">
         <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
         </a>
@@ -133,15 +130,9 @@
     </div>
   </div>
 
-</div>
+</header>
         
   
-  <div class="toggle sidebar-toggle" role="button">
-    <span class="toggle-line"></span>
-    <span class="toggle-line"></span>
-    <span class="toggle-line"></span>
-  </div>
-
   <aside class="sidebar">
 
     <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
@@ -162,54 +153,54 @@
         <!--/noindex-->
 
         <div class="site-overview-wrap sidebar-panel">
-          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
     <img class="site-author-image" itemprop="image" alt="Mr_Yao"
       src="/images/avatar.gif">
   <p class="site-author-name" itemprop="name">Mr_Yao</p>
   <div class="site-description" itemprop="description">一只努力向上的小菜鸟</div>
 </div>
-<div class="site-state-wrap site-overview-item animated">
+<div class="site-state-wrap animated">
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">18</span>
+          <span class="site-state-item-count">27</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
           <a href="/categories/">
-        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-count">7</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-count">10</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
 </div>
 
-
-
         </div>
       </div>
+
+
+<script type="text/javascript" charset="utf-8" src="/js/tagcloud.js"></script>
+<script type="text/javascript" charset="utf-8" src="/js/tagcanvas.js"></script>
+<div class="widget-wrap">
+    <div id="myCanvasContainer" class="widget tagcloud">
+        <canvas width="250" height="250" id="resCanvas" style="width:100%">
+            <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/JAVA/" rel="tag">JAVA</a><span class="tag-list-count">14</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySql/" rel="tag">MySql</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Mybatis/" rel="tag">Mybatis</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Boot/" rel="tag">Spring Boot</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Tomcat/" rel="tag">Tomcat</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web3/" rel="tag">web3</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/" rel="tag">分布式事务</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E9%93%BE%E8%B7%AF%E8%BF%BD%E8%B8%AA/" rel="tag">分布式链路追踪</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86/" rel="tag">编译原理</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" rel="tag">计算机网络</a><span class="tag-list-count">1</span></li></ul>
+        </canvas>
     </div>
-  </aside>
-  <div class="sidebar-dimmer"></div>
+</div>
 
-
-    </header>
+    </div>
 
     
-  <div class="back-to-top" role="button" aria-label="返回顶部">
-    <i class="fa fa-arrow-up"></i>
-    <span>0%</span>
-  </div>
+  </aside>
 
-<noscript>
-  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
-</noscript>
 
+    </div>
 
     <div class="main-inner post posts-expand">
 
@@ -227,11 +218,16 @@
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
       <meta itemprop="name" content="Mr_Yao">
-      <meta itemprop="description" content="一只努力向上的小菜鸟">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="Yao">
+      <meta itemprop="description" content="一只努力向上的小菜鸟">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Java泛型中的类型擦除以及Type接口 | Yao">
+      <meta itemprop="description" content="Java 泛型（generics）是JDK1.5中引入的一个新特性，其本质是参数化类型，解决不确定具体对象类型的问题;其所操作的数据类型被指定为一个参数（type parameter）这种参数类型可以用在类、接口和方法的创建中，分别称为泛型类、泛型接口、泛型方法。">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
@@ -245,9 +241,8 @@
         <i class="far fa-calendar"></i>
       </span>
       <span class="post-meta-item-text">发表于</span>
-      
 
-      <time title="创建时间：2021-11-15 16:18:29 / 修改时间：17:36:58" itemprop="dateCreated datePublished" datetime="2021-11-15T16:18:29+08:00">2021-11-15</time>
+      <time title="创建时间：2021-11-15 16:18:29" itemprop="dateCreated datePublished" datetime="2021-11-15T16:18:29+08:00">2021-11-15</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -259,27 +254,6 @@
         </span>
     </span>
 
-  
-    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
-      <span class="post-meta-item-icon">
-        <i class="far fa-eye"></i>
-      </span>
-      <span class="post-meta-item-text">阅读次数：</span>
-      <span id="busuanzi_value_page_pv"></span>
-    </span>
-  
-  <span class="post-meta-item">
-    
-    <span class="post-meta-item-icon">
-      <i class="far fa-comment"></i>
-    </span>
-    <span class="post-meta-item-text">Valine：</span>
-  
-    <a title="valine" href="/2021/11/15/type-erasure/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/2021/11/15/type-erasure/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
   
     <span class="post-meta-break"></span>
     <span class="post-meta-item" title="本文字数">
@@ -298,22 +272,21 @@
     </span>
 </div>
 
+            <div class="post-description">Java 泛型（generics）是JDK1.5中引入的一个新特性，其本质是参数化类型，解决不确定具体对象类型的问题;其所操作的数据类型被指定为一个参数（type parameter）这种参数类型可以用在类、接口和方法的创建中，分别称为泛型类、泛型接口、泛型方法。</div>
         </div>
       </header>
 
     
     
     
-    <div class="post-body" itemprop="articleBody">
-        <blockquote>
+    <div class="post-body" itemprop="articleBody"><blockquote>
 <p>Java 泛型（generics）是JDK1.5中引入的一个新特性，其本质是参数化类型，解决不确定具体对象类型的问题;其所操作的数据类型被指定为一个参数（type parameter）这种参数类型可以用在类、接口和方法的创建中，分别称为泛型类、泛型接口、泛型方法。  </p>
 </blockquote>
-<span id="more"></span>
 <p>但是在Java中并不是真正的泛型，实际上是“伪泛型”</p>
 <h3 id="类型擦除（type-Erasure）"><a href="#类型擦除（type-Erasure）" class="headerlink" title="类型擦除（type Erasure）"></a>类型擦除（type Erasure）</h3><p>为了与之前的版本兼容，JDK1.5中通过类型擦除来增加的泛型功能。Java泛型只是在编译器层次上，在编译后生成的字节码中是不包含泛型中类型的信息的。<br>通过一个例子来证明类型擦除</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">main</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        ArrayList&lt;String&gt; sList = <span class="keyword">new</span> ArrayList&lt;String&gt;();</span><br><span class="line">        ArrayList&lt;Integer&gt; iList = <span class="keyword">new</span> ArrayList&lt;Integer&gt;();</span><br><span class="line">        System.out.println(sList.getClass() == iList.getClass());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>上面定义了两个ArrayList，一个是ArrayList&lt;String&gt;泛型类型的,一个是ArrayList&lt;Integer&gt;类型的，但是最后打印的是<code>true</code>，说明两个类型相同。<br>用<code>javap -c</code>看一下生成的生成的字节码</p>
-<p><img src="1.png" alt="1"></p>
+<p><img src="/2021/11/15/type-erasure/1.png" alt="1"></p>
 <p>可以看到在字节码中，ArrayList&lt;String&gt;和ArrayList&lt;Integer&gt;都被编译成了ArrayList类型，可见编译后发生了类型擦除。</p>
 <ol>
 <li>既然编译后发生了类型擦除，那么虚拟机解析、反射等场景是怎么获取到正确的类型的？   </li>
@@ -334,15 +307,15 @@
 <p>再定义一个子类继承它</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">GenericClassTest</span> <span class="keyword">extends</span> <span class="title">GenericClass</span>&lt;<span class="title">Integer</span>&gt; </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setValue</span><span class="params">(Integer value)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.setValue(value);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Integer <span class="title">getValue</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">super</span>.getValue();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>在<code>GenericClassTest</code>中将<code>GenericClass</code>的泛型定义为<code>Integer</code>类型，并重写了get和set方法，因为存在类型擦除，父类<code>GenericClass</code>的泛型被擦除了。<br>用<code>javap -c</code> 查看一下<code>GenericClass</code>编译后的字节码</p>
-<p><img src="2.png" alt="2"></p>
+<p><img src="/2021/11/15/type-erasure/2.png" alt="2"></p>
 <p>可以看到类型擦除后泛型变为了<code>Object</code>。那么<code>GenericClass</code>也就变为了</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">GenericClass</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> Object value;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Object <span class="title">getValue</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> value;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setValue</span><span class="params">(Object value)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.value = value;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>这样，父类<code>GenericClass</code>中set和get方法操作的是Object对象，而子类<code>GenericClassTest</code> 操作的是Integer对象，为什么还可以重写？按照正常的继承关系中，这应该是重载。<br>按照重载的方式试一下</p>
-<p><img src="3.png" alt="3"></p>
+<p><img src="/2021/11/15/type-erasure/3.png" alt="3"></p>
 <p>可以看到设置Object对象出现了红波浪线，不允许这样设置，看来确实是重写，而不是重载。为什么会时重写，这不是跟Java多态冲突么？继续往下研究。<br>现在用<code>javap -c</code>看一下子类<code>GenericClassTest</code>的字节码文件</p>
-<p><img src="4.png" alt="4"></p>
+<p><img src="/2021/11/15/type-erasure/4.png" alt="4"></p>
 <p>在<code>GenericClassTest</code>中get和/set方法都有两个，一个是操作Object对象一个是操作Integer对象。<br>操作Integer对象的是<code>GenericClassTest</code>定义的，操作Object对象的是由编译器生成的。<br>再用<code>javap -v</code> 查看一下字节码更详细的信息。</p>
-<p><img src="5.png" alt="5"></p>
+<p><img src="/2021/11/15/type-erasure/5.png" alt="5"></p>
 <p>编译器生成的两个操作Object对象的方法中多了两个<code>ACC_BRIDGE</code>、<code>ACC_SYNTHETIC</code>标志。<br>这就是虚拟机解决类型擦除和多态冲突问题的方法：使用<code>桥接方法</code>。<br><code>桥接方法</code>方法是由编译器生成的，我们在代码中并不能直接使用，但是可以通过反射拿到桥接方法再使用。</p>
 <p>泛型一旦编译过后，类型就被擦除了，那到了运行时，怎么获取泛型信息？这就要使用JDK提供的Type类型接口了。</p>
 <h3 id="Type类型"><a href="#Type类型" class="headerlink" title="Type类型"></a>Type类型</h3><p>在没有泛型之前，所有的类型都通过Class类进行抽象，Class类的一个具体对象就代表了一个类型。<br>在JDK1.5增加了泛型之后，扩充了数据类型，将泛型也包含了。<br>JDK在原来的基础上增加了一个<code>Type</code>接口，它是所有类型的父接口，它的子类有</p>
@@ -411,32 +384,6 @@
     
     
     
-    
-        <br/>
-        <br/>
-        <div style="text-align:center;color: #ccc;font-size:15px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
-    
-      
-  <div class="popular-posts-header">相关文章推荐</div>
-  <ul class="popular-posts">
-    <li class="popular-posts-item">
-      <div class="popular-posts-title"><a href="/2021/09/23/aqs1/" rel="bookmark">AbstractQueuedSynchronizer源码分析-共享式</a></div>
-    </li>
-    <li class="popular-posts-item">
-      <div class="popular-posts-title"><a href="/2021/09/23/aqs2/" rel="bookmark">AbstractQueuedSynchronizer源码分析-独占式</a></div>
-    </li>
-    <li class="popular-posts-item">
-      <div class="popular-posts-title"><a href="/2022/05/27/classload/" rel="bookmark">Java类加载器</a></div>
-    </li>
-    <li class="popular-posts-item">
-      <div class="popular-posts-title"><a href="/2021/09/30/hashmap/" rel="bookmark">HashMap那些事儿</a></div>
-    </li>
-    <li class="popular-posts-item">
-      <div class="popular-posts-title"><a href="/2021/12/29/hot-loading/" rel="bookmark">设计一个支持热加载的Java应用启动器</a></div>
-    </li>
-  </ul>
-
-
 
     <footer class="post-footer">
           <div class="followme">
@@ -445,19 +392,21 @@
   <div class="social-list">
 
       <div class="social-item">
-        <a target="_blank" class="social-link" href="/images/wechat_channel.jpg">
-          <span class="icon">
-            <i class="fab fa-weixin"></i>
+          <span class="social-link">
+            <span class="icon">
+              <i class="fab fa-weixin"></i>
+            </span>
+
+            <span class="label">微信公众号</span>
           </span>
 
-          <span class="label">微信公众号</span>
-        </a>
+          <img class="social-item-img" src="/images/wechat_channel.jpg">
       </div>
   </div>
 </div>
 
           <div class="post-tags">
-              <a href="/tags/JAVA/" rel="tag"><i class="fa fa-tag"></i> JAVA</a>
+              <a href="/tags/JAVA/" rel="tag"># JAVA</a>
           </div>
 
         
@@ -483,7 +432,7 @@
 
 
 
-    <div class="comments" id="valine-comments"></div>
+    <div class="comments utterances-container"></div>
 </div>
   </main>
 
@@ -499,46 +448,42 @@
   </span>
   <span class="author" itemprop="copyrightHolder">Mr_Yao</span>
 </div>
-<div class="busuanzi-count">
-</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
 
     </div>
   </footer>
 
   
-  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
-<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
 
   
-<script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
 <script src="/js/third-party/search/local-search.js"></script>
 
 
 
 
-  <script src="/js/third-party/pace.js"></script>
+
 
   
-  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
 
 
 
 
-
-
-<script class="next-config" data-name="valine" type="application/json">{"enable":true,"appId":"AVIIxANWoXSFTQBh9BkUuqYY-MdYXbMMI","appKey":"e40mu8mtAoQyf35HKVX27HbH","serverURLs":"https://aviixanw.api.lncldglobal.com","placeholder":"有什么问题，欢迎留言指正与交流...","avatar":"mm","meta":["nick","mail","link"],"pageSize":10,"lang":null,"visitor":false,"comment_count":false,"recordIP":false,"enableQQ":false,"requiredFields":[],"notify":true,"verify":false,"el":"#valine-comments","path":"/2021/11/15/type-erasure/"}</script>
-<script>
-document.addEventListener('page:loaded', () => {
-  NexT.utils.loadComments(CONFIG.valine.el)
-    .then(() => NexT.utils.getScript(
-      'https://cdn.jsdelivr.net/npm/valine@1.4.14/dist/Valine.min.js',
-      { condition: window.Valine }
-    ))
-    .then(() => {
-      new Valine(CONFIG.valine);
-    });
-});
-</script>
+<script class="next-config" data-name="utterances" type="application/json">{"enable":true,"repo":"yaocl0/blogtalk","issue_term":"pathname","theme":"github-light"}</script>
+<script src="/js/third-party/comments/utterances.js"></script>
 
 </body>
 </html>
