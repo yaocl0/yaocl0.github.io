@@ -3,8 +3,8 @@ http://yaocl.cn/2021/09/28/tcp34/
 http://yaocl.cn/2022/04/06/threadlocal/
 http://yaocl.cn/2021/12/22/tomcat-arch/
 http://yaocl.cn/2021/11/15/type-erasure/
-http://yaocl.cn/2021/03/03/aqs2/
 http://yaocl.cn/2021/02/13/aqs1/
+http://yaocl.cn/2021/03/03/aqs2/
 http://yaocl.cn/2021/06/26/explain/
 http://yaocl.cn/2021/09/30/hashmap/
 http://yaocl.cn/2021/12/29/hot-loading/
