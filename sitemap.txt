@@ -9,8 +9,8 @@ http://yaocl.cn/2021/06/26/explain/
 http://yaocl.cn/2021/09/30/hashmap/
 http://yaocl.cn/2021/12/29/hot-loading/
 http://yaocl.cn/2021/04/15/introspector/
-http://yaocl.cn/2021/05/15/java-proxy/
 http://yaocl.cn/2021/10/24/javalambda/
+http://yaocl.cn/2021/05/15/java-proxy/
 http://yaocl.cn/2022/04/27/jstack/
 http://yaocl.cn/2021/04/13/rl/
 http://yaocl.cn/2021/07/10/spi/
