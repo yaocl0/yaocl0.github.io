@@ -465,6 +465,27 @@ Original highlight.js style (c) Ivan Sagalaev <maniac@softwaremaniacs.org>
   font-weight: bold;
 }
 
+.highlight:hover .copy-btn,
+pre:hover .copy-btn {
+  opacity: 1;
+}
+figure.highlight .table-container {
+  position: relative;
+}
+.copy-btn {
+  color: #333;
+  cursor: pointer;
+  line-height: 1.6;
+  opacity: 0;
+  padding: 2px 6px;
+  position: absolute;
+  transition: opacity 0.2s ease-in-out;
+  background: #fff;
+  border: 0;
+  font-size: 0.8125em;
+  right: 0;
+  top: 0;
+}
 code,
 kbd,
 figure.highlight,
@@ -1640,6 +1661,16 @@ pre code {
 }
 .back-to-top.back-to-top-on {
   bottom: 30px;
+}
+.reading-progress-bar {
+  --progress: 0;
+  background: #37c6c0;
+  height: 3px;
+  position: fixed;
+  z-index: 50;
+  width: var(--progress);
+  left: 0;
+  top: 0;
 }
 .rtl.post-body p,
 .rtl.post-body a,

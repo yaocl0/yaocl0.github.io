@@ -47,7 +47,7 @@
   </url>
   
   <url>
-    <loc>http://yaocl.cn/2021/02/13/aqs1/</loc>
+    <loc>http://yaocl.cn/2021/03/03/aqs2/</loc>
     
     <lastmod>2023-05-19</lastmod>
     
@@ -56,7 +56,7 @@
   </url>
   
   <url>
-    <loc>http://yaocl.cn/2021/03/03/aqs2/</loc>
+    <loc>http://yaocl.cn/2021/02/13/aqs1/</loc>
     
     <lastmod>2023-05-19</lastmod>
     
@@ -101,7 +101,7 @@
   </url>
   
   <url>
-    <loc>http://yaocl.cn/2021/10/24/javalambda/</loc>
+    <loc>http://yaocl.cn/2021/05/15/java-proxy/</loc>
     
     <lastmod>2023-05-19</lastmod>
     
@@ -110,7 +110,7 @@
   </url>
   
   <url>
-    <loc>http://yaocl.cn/2021/05/15/java-proxy/</loc>
+    <loc>http://yaocl.cn/2021/10/24/javalambda/</loc>
     
     <lastmod>2023-05-19</lastmod>
     
@@ -297,14 +297,14 @@
   </url>
   
   <url>
-    <loc>http://yaocl.cn/tags/JAVA/</loc>
+    <loc>http://yaocl.cn/tags/%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86/</loc>
     <lastmod>2023-05-21</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>http://yaocl.cn/tags/%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86/</loc>
+    <loc>http://yaocl.cn/tags/JAVA/</loc>
     <lastmod>2023-05-21</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -332,6 +332,13 @@
   </url>
   
   <url>
+    <loc>http://yaocl.cn/tags/Mybatis/</loc>
+    <lastmod>2023-05-21</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
     <loc>http://yaocl.cn/tags/Spring-Boot/</loc>
     <lastmod>2023-05-21</lastmod>
     <changefreq>weekly</changefreq>
@@ -352,13 +359,6 @@
     <priority>0.2</priority>
   </url>
   
-  <url>
-    <loc>http://yaocl.cn/tags/Mybatis/</loc>
-    <lastmod>2023-05-21</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
 
   
   <url>
@@ -369,14 +369,14 @@
   </url>
   
   <url>
-    <loc>http://yaocl.cn/categories/JAVA/</loc>
+    <loc>http://yaocl.cn/categories/%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86/</loc>
     <lastmod>2023-05-21</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>http://yaocl.cn/categories/%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86/</loc>
+    <loc>http://yaocl.cn/categories/JAVA/</loc>
     <lastmod>2023-05-21</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
