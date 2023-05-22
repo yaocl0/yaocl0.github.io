@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 5.4.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="google-site-verification" content="MBUPLTqs-crTMrXutrEiB0jYb3zBMf1ua13kTbOEqY">
+  <meta name="baidu-site-verification" content="codeva-PHrgdBFiZ7">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"yaocl.cn","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.16.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"style":"flat"},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"utterances","storage":true,"lazyload":false,"nav":null,"activeClass":"utterances"},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/db.json","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="Seata 的设计思路是将一个分布式事务理解成一个全局事务下面挂了多个分支事务，而一个分支事务是一个满足 ACID 的本地事务，因此我们可以操作分布式事务像操作本地事务一样。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="分布式事务框架Seata">
+<meta property="og:url" content="http://yaocl.cn/2022/12/19/24seata/index.html">
+<meta property="og:site_name" content="Yao">
+<meta property="og:description" content="Seata 的设计思路是将一个分布式事务理解成一个全局事务下面挂了多个分支事务，而一个分支事务是一个满足 ACID 的本地事务，因此我们可以操作分布式事务像操作本地事务一样。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://yaocl.cn/2022/12/19/24seata/1.png">
+<meta property="og:image" content="http://yaocl.cn/2022/12/19/24seata/2.png">
+<meta property="og:image" content="http://yaocl.cn/2022/12/19/24seata/3.png">
+<meta property="og:image" content="http://yaocl.cn/2022/12/19/24seata/4.png">
+<meta property="og:image" content="http://yaocl.cn/2022/12/19/24seata/5.png">
+<meta property="article:published_time" content="2022-12-19T06:33:18.000Z">
+<meta property="article:modified_time" content="2023-05-22T01:00:59.053Z">
+<meta property="article:author" content="Mr_Yao">
+<meta property="article:tag" content="分布式事务">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://yaocl.cn/2022/12/19/24seata/1.png">
+
+
+<link rel="canonical" href="http://yaocl.cn/2022/12/19/24seata/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://yaocl.cn/2022/12/19/24seata/","path":"2022/12/19/24seata/","title":"分布式事务框架Seata"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>分布式事务框架Seata | Yao</title>
+  
+
+  <script src="/js/third-party/analytics/baidu-analytics.js"></script>
+  <script async src="https://hm.baidu.com/hm.js?0202a37701ab53d1c3a4b778f332cd73"></script>
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="Yao" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Yao</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li><li class="menu-item menu-item-message"><a href="/message/" rel="section"><i class="fa fa fa-comments fa-fw"></i>留言</a></li><li class="menu-item menu-item-books"><a href="/books/" rel="section"><i class="fa  fa-book fa-fw"></i>阅读</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Seata-%E5%85%A8%E5%B1%80%E6%A1%86%E6%9E%B6"><span class="nav-number">1.</span> <span class="nav-text">Seata 全局框架</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#AT-%E6%A8%A1%E5%BC%8F"><span class="nav-number">1.1.</span> <span class="nav-text">AT 模式</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA"><span class="nav-number">2.</span> <span class="nav-text">环境搭建</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9C%8D%E5%8A%A1%E7%AB%AF%E9%83%A8%E7%BD%B2"><span class="nav-number">2.1.</span> <span class="nav-text">服务端部署</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%9A%E5%8A%A1%E7%B3%BB%E7%BB%9F%E9%9B%86%E6%88%90"><span class="nav-number">2.2.</span> <span class="nav-text">业务系统集成</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%9A%E5%8A%A1%E4%BD%BF%E7%94%A8"><span class="nav-number">2.2.1.</span> <span class="nav-text">业务使用</span></a></li></ol></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Mr_Yao"
+      src="/images/avatar.gif">
+  <p class="site-author-name" itemprop="name">Mr_Yao</p>
+  <div class="site-description" itemprop="description">一只努力向上的小菜鸟</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">27</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">10</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+
+
+<script type="text/javascript" charset="utf-8" src="/js/tagcloud.js"></script>
+<script type="text/javascript" charset="utf-8" src="/js/tagcanvas.js"></script>
+<div class="widget-wrap">
+    <div id="myCanvasContainer" class="widget tagcloud">
+        <canvas width="250" height="250" id="resCanvas" style="width:100%">
+            <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/JAVA/" rel="tag">JAVA</a><span class="tag-list-count">14</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySql/" rel="tag">MySql</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Mybatis/" rel="tag">Mybatis</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Boot/" rel="tag">Spring Boot</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Tomcat/" rel="tag">Tomcat</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web3/" rel="tag">web3</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/" rel="tag">分布式事务</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E9%93%BE%E8%B7%AF%E8%BF%BD%E8%B8%AA/" rel="tag">分布式链路追踪</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86/" rel="tag">编译原理</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" rel="tag">计算机网络</a><span class="tag-list-count">1</span></li></ul>
+        </canvas>
+    </div>
+</div>
+
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yaocl.cn/2022/12/19/24seata/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Mr_Yao">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yao">
+      <meta itemprop="description" content="一只努力向上的小菜鸟">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="分布式事务框架Seata | Yao">
+      <meta itemprop="description" content="Seata 的设计思路是将一个分布式事务理解成一个全局事务下面挂了多个分支事务，而一个分支事务是一个满足 ACID 的本地事务，因此我们可以操作分布式事务像操作本地事务一样。">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          分布式事务框架Seata
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-12-19 14:33:18" itemprop="dateCreated datePublished" datetime="2022-12-19T14:33:18+08:00">2022-12-19</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/" itemprop="url" rel="index"><span itemprop="name">分布式事务</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>5.8k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>5 分钟</span>
+    </span>
+</div>
+
+            <div class="post-description">Seata 的设计思路是将一个分布式事务理解成一个全局事务下面挂了多个分支事务，而一个分支事务是一个满足 ACID 的本地事务，因此我们可以操作分布式事务像操作本地事务一样。</div>
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>分布式事务基础</p>
+<p><a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s?__biz=MzU2NjMwMTkzMw==&mid=2247484102&idx=1&sn=58aca57cc3c96f64af6c68e9944918d7&chksm=fcafc744cbd84e52da07629c679a9915ee9cb7ba5698aee5934429b19a95ce2a402c07dca756&token=1611733318&lang=zh_CN#rd">&lt;&lt;分布式事务基础理论&gt;&gt;</a></p>
+<p><a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s?__biz=MzU2NjMwMTkzMw==&mid=2247484148&idx=1&sn=2e5395cf06ce1fcf5fd52b1c4381ea49&chksm=fcafc776cbd84e600b244ba4040f1cdd8b4845bb3a1ec144497a41e4b65652468c621f9be8dd&token=1611733318&lang=zh_CN#rd">&lt;&lt;分布式事务解决方案&gt;&gt;</a></p>
+<p>Seata 一款开源的分布式事务解决方案，致力于提供高性能和简单易用的分布式事务服务。Seata 将为用户提供了 AT、TCC、SAGA 和 XA 事务模式，为用户打造一站式的分布式解决方案。</p>
+<h2 id="Seata-全局框架"><a href="#Seata-全局框架" class="headerlink" title="Seata 全局框架"></a>Seata 全局框架</h2><p>Seata 的设计思路是将一个分布式事务理解成一个全局事务下面挂了多个分支事务，而一个分支事务是一个满足 ACID 的本地事务，因此我们可以操作分布式事务像操作本地事务一样。</p>
+<p>在 Seata 内部定义了三个模块来处理全局事务和分支事务：</p>
+<ul>
+<li>  Transaction Coordinator（TC) - 事务协调者: 维护全局事务的运行状态，负责协调并驱动全局事务的提交或回滚。</li>
+<li>  Transaction Manager (TM)-  事务管理器： 控制全局事务的边界，负责开启一个全局事务，并最终发起全局提交或全局回滚的决议。</li>
+<li>  Resource Manager (RM)  - 资源管理器： 控制分支事务，负责分支注册、状态汇报，并接收事务协调器的指令，驱动分支（本地）事务的提交和回滚。</li>
+</ul>
+<p>Seata 提供的 AT、TCC、SAGA 和 XA 事务模式，都是基于这三个模块进行的。Seata 整体的执行步骤为：</p>
+<ol>
+<li> TM 向 TC 申请开启一个全局事务，TC 创建全局事务并返回一个唯一的 XID，XID 会在全局事务的上下文中传播。</li>
+<li> RM 向 TC 注册分支事务，该分支事务归属于拥有相同 XID 的全局事务。</li>
+<li> TM 向 TC 发起全局的提交或回滚。</li>
+<li> TC 调度 XID 下的所有分支事务提交或回滚。</li>
+</ol>
+<p><img src="/2022/12/19/24seata/1.png"></p>
+<h3 id="AT-模式"><a href="#AT-模式" class="headerlink" title="AT 模式"></a>AT 模式</h3><p>在<a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s?__biz=MzU2NjMwMTkzMw==&mid=2247484148&idx=1&sn=2e5395cf06ce1fcf5fd52b1c4381ea49&chksm=fcafc776cbd84e600b244ba4040f1cdd8b4845bb3a1ec144497a41e4b65652468c621f9be8dd&token=1611733318&lang=zh_CN#rd">《分布式事务解决方案》</a>中介绍了常见的几种方案，总的来说主要分为两类：对业务无入侵和有入侵的方案。无入侵方案主要有基于数据库 XA 协议，虽然 XA 协议与业务代码解耦，但是它必须要求数据库对 XA 协议的支持，且 XA 协议会造成事务资源长时间得不到释放，锁定周期长，性能很差。有入侵的方案都需要通过在应用层做手脚，比如很出名的 TCC 方案，基于 TCC 也有很多成熟的框架，如 ByteTCC、tcc-transaction 等。</p>
+<p>针对以上事务解决方案的痛点，Seata 提出了 AT 模式，<code>也是Seata默认的事务模式</code>。</p>
+<p>AT 模式的实现原理是在数据源做了一层代理(DataSourceProxy)，在代理层中 Seata 加入了一些额外的逻辑，包括解析 SQL，把业务数据在更新前后的数据镜像组织成回滚日志，并将 undo log 日志插入 undo_log 表中，保证每条更新数据的业务 sql 都有对应的回滚日志存在。</p>
+<p>AT 模式的执行过程</p>
+<ul>
+<li>  一阶段：</li>
+</ul>
+<p>Seata 拦截“业务 SQL”，首先解析 SQL 语义，找到“业务 SQL”要更新的业务数据，在业务数据被更新前，将其保存成<code>before image</code>，然后执行“业务 SQL”更新业务数据，在业务数据更新之后，再将其保存成<code>after image</code>，最后生成行锁。以上操作全部在一个数据库事务内完成，这样保证了一阶段操作的原子性。最后生成的<code>before image</code>和<code>after image</code>会保存到 undo log 表中</p>
+<p><img src="/2022/12/19/24seata/2.png"></p>
+<ul>
+<li>  二阶段：</li>
+</ul>
+<p>如果是提交，因为“业务 SQL”在一阶段已经提交至数据库， 所以 Seata 框架只需将一阶段保存的快照数据和行锁删掉，完成数据清理即可。</p>
+<p><img src="/2022/12/19/24seata/3.png"></p>
+<p>如果是回滚，Seata 就需要回滚一阶段已经执行的“业务 SQL”，还原业务数据。回滚方式便是用<code>before image</code>还原业务数据；但在还原前要首先要校验脏写，对比“数据库当前业务数据”和 “after image”，如果两份数据完全一致就说明没有脏写，可以还原业务数据，如果不一致就说明有脏写，出现脏写就需要转人工处理。</p>
+<p><img src="/2022/12/19/24seata/4.png"></p>
+<p>AT 模式的一阶段、二阶段提交和回滚均由 Seata 框架自动生成，用户只需编写业务 SQL，便能轻松使用分布式事务，AT 模式是一种对业务无任何侵入的分布式事务解决方案。</p>
+<h2 id="环境搭建"><a href="#环境搭建" class="headerlink" title="环境搭建"></a>环境搭建</h2><p>Seata 分 TC、TM 和 RM 三个角色，TC（Server 端）为单独服务端部署，TM 和 RM（Client 端）由业务系统集成。</p>
+<h3 id="服务端部署"><a href="#服务端部署" class="headerlink" title="服务端部署"></a>服务端部署</h3><ol>
+<li> 下载启动包：<a target="_blank" rel="noopener" href="https://github.com/seata/seata/releases">https://github.com/seata/seata/releases</a></li>
+<li> 建表，主要的表有三个：</li>
+</ol>
+<ul>
+<li><p>  全局事务：global_table</p>
+</li>
+<li><p>  分支事务：branch_table</p>
+</li>
+<li><p>全局锁：lock_table</p>
+<p>  在 MySQL 中，创建一个名为 seata 的数据库实例。创建相关表的脚本在 <code>seata--&gt;script--&gt;server--&gt;db</code>目录下</p>
+</li>
+</ul>
+<ol>
+<li> 设置配置中心和注册中心</li>
+</ol>
+<ul>
+<li><p>  搭建 nacos，具体的搭建过程自行查资料</p>
+</li>
+<li><p>配置中心： <code>seata--&gt;conf--&gt;application.yml</code> 修改 seata.config.type=”nacos”,在 <code>seata--&gt;conf--&gt;application.example.yml</code> 中 seata.config.nacos 下有相关的 nacos 配置，将其复制到 application.yml 下，并将 nacos 相关的数据配置完整。</p>
+<p>  设置配置中心可以参考官网：<a target="_blank" rel="noopener" href="https://seata.io/zh-cn/docs/user/configuration/nacos.html">https://seata.io/zh-cn/docs/user/configuration/nacos.html</a></p>
+</li>
+<li><p>  注册中心： <code>seata--&gt;conf--&gt;application.yml</code> 修改 seata.registry.type=”nacos”,在 <code>seata--&gt;conf--&gt;application.example.yml</code> 中 seata.registry.nacos 下有相关的 nacos 配置，将其复制到 application.yml 下，并将 nacos 相关的数据配置完整。</p>
+</li>
+</ul>
+<ol>
+<li><p>修改存储模式 store.mode<br> Server 端存储模式（store.mode）现有 file、db、redis 三种，file 模式无需改动，直接启动即可，下面专门讲下 db，因为 db 模式为高可用模式，全局事务会话信息通过 db 共享。<br> <code>seata--&gt;conf--&gt;application.yml</code>，修改 store.mode=”db”</p>
+</li>
+<li><p>修改数据库连接<br> <code>seata--&gt;conf--&gt;application.example.yml</code> 中附带额外配置，将其 db 相关配置复制至 application.yml，修改 store.db 相关属性。</p>
+</li>
+<li><p> 启动</p>
+</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">seata-server.sh -h 127.0.0.1 -p 8091 -m db</span><br></pre></td></tr></table></figure>
+
+<h3 id="业务系统集成"><a href="#业务系统集成" class="headerlink" title="业务系统集成"></a>业务系统集成</h3><ol>
+<li> 添加依赖，Seata 提供了不同的依赖包。可以根据项目自行选择，建议单选。</li>
+</ol>
+<ul>
+<li>  依赖 seata-all</li>
+<li>  依赖 seata-spring-boot-starter，支持 yml、properties 配置(.conf 可删除)，内部已依赖 seata-all</li>
+<li>  依赖 spring-cloud-alibaba-seata，内部集成了 seata，并实现了 xid 传递</li>
+</ul>
+<ol>
+<li> 在涉及到的服务的数据库中创建<code>undo_log</code>表</li>
+</ol>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> `undo_log` (</span><br><span class="line">  `id` <span class="type">bigint</span>(<span class="number">20</span>) <span class="keyword">NOT</span> <span class="keyword">NULL</span> AUTO_INCREMENT,</span><br><span class="line">  `branch_id` <span class="type">bigint</span>(<span class="number">20</span>) <span class="keyword">NOT</span> <span class="keyword">NULL</span>,</span><br><span class="line">  `xid` <span class="type">varchar</span>(<span class="number">100</span>) <span class="keyword">NOT</span> <span class="keyword">NULL</span>,</span><br><span class="line">  `context` <span class="type">varchar</span>(<span class="number">128</span>) <span class="keyword">NOT</span> <span class="keyword">NULL</span>,</span><br><span class="line">  `rollback_info` longblob <span class="keyword">NOT</span> <span class="keyword">NULL</span>,</span><br><span class="line">  `log_status` <span class="type">int</span>(<span class="number">11</span>) <span class="keyword">NOT</span> <span class="keyword">NULL</span>,</span><br><span class="line">  `log_created` datetime <span class="keyword">NOT</span> <span class="keyword">NULL</span>,</span><br><span class="line">  `log_modified` datetime <span class="keyword">NOT</span> <span class="keyword">NULL</span>,</span><br><span class="line">  `ext` <span class="type">varchar</span>(<span class="number">100</span>) <span class="keyword">DEFAULT</span> <span class="keyword">NULL</span>,</span><br><span class="line">  <span class="keyword">PRIMARY</span> KEY (`id`),</span><br><span class="line">  <span class="keyword">UNIQUE</span> KEY `ux_undo_log` (`xid`,`branch_id`)</span><br><span class="line">) ENGINE<span class="operator">=</span>InnoDB AUTO_INCREMENT<span class="operator">=</span><span class="number">1</span> <span class="keyword">DEFAULT</span> CHARSET<span class="operator">=</span>utf8mb4;</span><br></pre></td></tr></table></figure>
+
+<ol>
+<li> 初始化 GlobalTransactionScanner，如果引入<code>seata-spring-boot-starter</code>、<code>spring-cloud-starter-alibaba-seata</code>等 jar 会自动初始化，否则需要手动初始化。</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Bean</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> GlobalTransactionScanner <span class="title">globalTransactionScanner</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    String applicationName = <span class="keyword">this</span>.applicationContext.getEnvironment().getProperty(<span class="string">&quot;spring.application.name&quot;</span>);</span><br><span class="line">    String txServiceGroup = <span class="keyword">this</span>.seataProperties.getTxServiceGroup();</span><br><span class="line">    <span class="keyword">if</span> (StringUtils.isEmpty(txServiceGroup)) &#123;</span><br><span class="line">        txServiceGroup = applicationName + <span class="string">&quot;-fescar-service-group&quot;</span>;</span><br><span class="line">        <span class="keyword">this</span>.seataProperties.setTxServiceGroup(txServiceGroup);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> GlobalTransactionScanner(applicationName, txServiceGroup);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol>
+<li> 实现 xid 跨服务传递，如果是 Spring Cloud 项目，并引用了<code>spring-cloud-starter-alibaba-seata</code>jar，则已经自动实现了，否则需要参考源码 integration 文件夹下的各种 rpc 实现 module</li>
+</ol>
+<h4 id="业务使用"><a href="#业务使用" class="headerlink" title="业务使用"></a>业务使用</h4><p>1、以一个 Spring Cloud 项目为例，项目中有两个服务：订单服务和 库存服务。业务场景为创建订单的同时减库存。</p>
+<p>在两个服务中添加依赖</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.alibaba.cloud<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-cloud-starter-alibaba-seata<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.alibaba.nacos<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>nacos-client<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>2、在每个业务服务下的数据库里添加<code>undo_log</code>表。</p>
+<p>3、在每个业务服务下的配置文件中添加 seata 配置</p>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">seata:</span></span><br><span class="line">  <span class="attr">tx-service-group:</span> <span class="string">default_tx_group</span></span><br><span class="line">  <span class="attr">registry:</span></span><br><span class="line">    <span class="attr">type:</span> <span class="string">nacos</span></span><br><span class="line">    <span class="attr">nacos:</span></span><br><span class="line">      <span class="attr">application:</span> <span class="string">seata-server</span> <span class="comment"># seata server 的服务名seata-server ，如果没有修改可以不配</span></span><br><span class="line">      <span class="attr">server-addr:</span>  <span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span><span class="string">:8848</span> <span class="comment"># seata server 所在的nacos服务地址</span></span><br><span class="line">      <span class="attr">group :</span> <span class="string">DEFAULT_GROUP</span>  <span class="comment"># seata server 所在的组，默认就是SEATA_GROUP，没有改也可以不配</span></span><br><span class="line">      <span class="attr">namespace:</span> <span class="string">0d876b7d-4cfd-4860-bf81-8e5266c9375c</span> <span class="comment"># 自己seata注册中心namespace</span></span><br><span class="line">      <span class="attr">username:</span> <span class="string">nacos</span></span><br><span class="line">      <span class="attr">password:</span> <span class="string">nacos</span></span><br><span class="line">  <span class="attr">config:</span></span><br><span class="line">    <span class="attr">type:</span> <span class="string">nacos</span></span><br><span class="line">    <span class="attr">nacos:</span></span><br><span class="line">      <span class="attr">server-addr:</span> <span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span><span class="string">:8848</span> <span class="comment"># seata server 所在的nacos服务地址</span></span><br><span class="line">      <span class="attr">username:</span> <span class="string">nacos</span></span><br><span class="line">      <span class="attr">password:</span> <span class="string">nacos</span></span><br><span class="line">      <span class="attr">group:</span> <span class="string">DEFAULT_GROUP</span></span><br><span class="line">      <span class="attr">namespace:</span> <span class="string">0d876b7d-4cfd-4860-bf81-8e5266c9375c</span> <span class="comment"># 自己seata注册中心namespace</span></span><br><span class="line">  <span class="attr">application-id:</span> <span class="string">seata-demo</span> <span class="comment">#</span></span><br><span class="line">  <span class="attr">enabled:</span> <span class="literal">true</span></span><br></pre></td></tr></table></figure>
+
+<p><code>注意</code>：</p>
+<ol>
+<li> 这里的 group 要与 server 端配置的保持一致</li>
+<li> tx-service-group 为事务群组，要部署同一套分布式事务的微服务要求事务群组要一致。可以在 nacos 的配置中查询 ：service.vgroupMapping.xxx。</li>
+</ol>
+<p><img src="/2022/12/19/24seata/5.png"></p>
+<ol>
+<li> 库存服务 <code>StockController</code></li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@PostMapping(value = &quot;/reduct&quot;)</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">reduct</span><span class="params">(String productId)</span> </span>&#123;</span><br><span class="line">    <span class="comment">//去库存</span></span><br><span class="line">    stockService.reduct(order.getProductId());</span><br><span class="line">    <span class="comment">// 异常</span></span><br><span class="line">    <span class="keyword">int</span> a=<span class="number">1</span>/<span class="number">0</span>;</span><br><span class="line">    <span class="keyword">return</span> order;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在减库存的方法中模拟了一个业务异常<code>int a=1/0</code>，表示服务调用发生异常。</p>
+<ol>
+<li> 订单服务中创建调用库存服务的 Feign</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@FeignClient(value = &quot;stock-service&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">StockApi</span> </span>&#123;</span><br><span class="line">    <span class="meta">@PostMapping(value = &quot;/reduct&quot;)</span></span><br><span class="line">   <span class="function"><span class="keyword">void</span> <span class="title">reduct</span><span class="params">(String productId)</span></span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>订单服务<code>OrderService</code>，在需要开启全局事务的方法上添加<code>@GlobalTransactional</code>注解</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">Autowired</span><br><span class="line"><span class="keyword">private</span> StockApi stockApi;</span><br><span class="line"></span><br><span class="line"><span class="meta">@GlobalTransactional</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> Order <span class="title">create</span><span class="params">(Order order)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 插入</span></span><br><span class="line">    orderMapper.insert(order);</span><br><span class="line">    <span class="comment">// 减库存</span></span><br><span class="line">    stockApi.reduct(order.getProductId());</span><br><span class="line">    <span class="keyword">return</span> order;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>当调用订单服务时，库存服务发生异常，可以判断发生异常后两个数据库中的数据是否回滚。</p>
+<p>参考： <a target="_blank" rel="noopener" href="https://seata.io/zh-cn/blog/seata-at-tcc-saga.html">https://seata.io/zh-cn/blog/seata-at-tcc-saga.html</a></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>请我一杯咖啡吧！</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="/images/wechatpay.png" alt="Mr_Yao 微信">
+        <span>微信</span>
+      </div>
+      <div>
+        <img src="/images/alipay.png" alt="Mr_Yao 支付宝">
+        <span>支付宝</span>
+      </div>
+
+  </div>
+</div>
+
+          <div class="followme">
+  <span>欢迎关注我的其它发布渠道</span>
+
+  <div class="social-list">
+
+      <div class="social-item">
+          <span class="social-link">
+            <span class="icon">
+              <i class="fab fa-weixin"></i>
+            </span>
+
+            <span class="label">微信公众号</span>
+          </span>
+
+          <img class="social-item-img" src="/images/wechat_channel.jpg">
+      </div>
+  </div>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/" rel="tag"><i class="fa fa-tag"></i> 分布式事务</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/11/23/23distributedTransaction/" rel="prev" title="分布式事务基础">
+                  <i class="fa fa-chevron-left"></i> 分布式事务基础
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2023/01/13/25dapp/" rel="next" title="什么是DAPP">
+                  什么是DAPP <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments utterances-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Mr_Yao</span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+<script class="next-config" data-name="utterances" type="application/json">{"enable":true,"repo":"yaocl0/blogtalk","issue_term":"pathname","theme":"github-light"}</script>
+<script src="/js/third-party/comments/utterances.js"></script>
+
+</body>
+</html>

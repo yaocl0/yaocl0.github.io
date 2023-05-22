@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 5.4.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="google-site-verification" content="MBUPLTqs-crTMrXutrEiB0jYb3zBMf1ua13kTbOEqY">
+  <meta name="baidu-site-verification" content="codeva-PHrgdBFiZ7">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"yaocl.cn","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.16.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"style":"flat"},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"utterances","storage":true,"lazyload":false,"nav":null,"activeClass":"utterances"},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/db.json","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="分布式事务是指事务的参与者、支持事务的服务器、资源服务器以及事务管理器分别位于不同的分布式系统的不同节点之上。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="分布式事务基础">
+<meta property="og:url" content="http://yaocl.cn/2022/11/23/23distributedTransaction/index.html">
+<meta property="og:site_name" content="Yao">
+<meta property="og:description" content="分布式事务是指事务的参与者、支持事务的服务器、资源服务器以及事务管理器分别位于不同的分布式系统的不同节点之上。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://yaocl.cn/2022/11/23/23distributedTransaction/1.png">
+<meta property="og:image" content="http://yaocl.cn/2022/11/23/23distributedTransaction/2.png">
+<meta property="og:image" content="http://yaocl.cn/2022/11/23/23distributedTransaction/3.png">
+<meta property="og:image" content="http://yaocl.cn/2022/11/23/23distributedTransaction/4.png">
+<meta property="og:image" content="http://yaocl.cn/2022/11/23/23distributedTransaction/5.png">
+<meta property="og:image" content="http://yaocl.cn/2022/11/23/23distributedTransaction/6.png">
+<meta property="og:image" content="http://yaocl.cn/2022/11/23/23distributedTransaction/7.png">
+<meta property="og:image" content="http://yaocl.cn/2022/11/23/23distributedTransaction/8.png">
+<meta property="og:image" content="http://yaocl.cn/2022/11/23/23distributedTransaction/9.png">
+<meta property="og:image" content="http://yaocl.cn/2022/11/23/23distributedTransaction/10.png">
+<meta property="og:image" content="http://yaocl.cn/2022/11/23/23distributedTransaction/11.png">
+<meta property="og:image" content="http://yaocl.cn/2022/11/23/23distributedTransaction/12.png">
+<meta property="og:image" content="http://yaocl.cn/2022/11/23/23distributedTransaction/13.png">
+<meta property="og:image" content="http://yaocl.cn/2022/11/23/23distributedTransaction/14.png">
+<meta property="og:image" content="http://yaocl.cn/2022/11/23/23distributedTransaction/15.png">
+<meta property="og:image" content="http://yaocl.cn/2022/11/23/23distributedTransaction/16.png">
+<meta property="article:published_time" content="2022-11-23T02:27:40.000Z">
+<meta property="article:modified_time" content="2023-05-22T01:00:59.043Z">
+<meta property="article:author" content="Mr_Yao">
+<meta property="article:tag" content="分布式事务">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://yaocl.cn/2022/11/23/23distributedTransaction/1.png">
+
+
+<link rel="canonical" href="http://yaocl.cn/2022/11/23/23distributedTransaction/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://yaocl.cn/2022/11/23/23distributedTransaction/","path":"2022/11/23/23distributedTransaction/","title":"分布式事务基础"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>分布式事务基础 | Yao</title>
+  
+
+  <script src="/js/third-party/analytics/baidu-analytics.js"></script>
+  <script async src="https://hm.baidu.com/hm.js?0202a37701ab53d1c3a4b778f332cd73"></script>
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="Yao" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Yao</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li><li class="menu-item menu-item-message"><a href="/message/" rel="section"><i class="fa fa fa-comments fa-fw"></i>留言</a></li><li class="menu-item menu-item-books"><a href="/books/" rel="section"><i class="fa  fa-book fa-fw"></i>阅读</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9C%AC%E5%9C%B0%E4%BA%8B%E7%89%A9"><span class="nav-number">1.</span> <span class="nav-text">本地事物</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1"><span class="nav-number">2.</span> <span class="nav-text">分布式事务</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CAP-%E7%90%86%E8%AE%BA"><span class="nav-number">3.</span> <span class="nav-text">CAP 理论</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#BASE-%E7%90%86%E8%AE%BA%E2%80%93CAP-%E7%90%86%E8%AE%BA%E7%9A%84%E5%BB%B6%E4%BC%B8"><span class="nav-number">4.</span> <span class="nav-text">BASE 理论–CAP 理论的延伸</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9F%94%E6%80%A7%E4%BA%8B%E5%8A%A1"><span class="nav-number">5.</span> <span class="nav-text">柔性事务</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#XA-%E2%80%93%E5%BC%BA%E4%B8%80%E8%87%B4%E6%80%A7"><span class="nav-number">6.</span> <span class="nav-text">XA –强一致性</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2PC"><span class="nav-number">6.1.</span> <span class="nav-text">2PC</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3PC"><span class="nav-number">6.2.</span> <span class="nav-text">3PC</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#TCC-%E2%80%93%E6%9C%80%E7%BB%88%E4%B8%80%E8%87%B4%E6%80%A7"><span class="nav-number">7.</span> <span class="nav-text">TCC –最终一致性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9C%AC%E5%9C%B0%E6%B6%88%E6%81%AF%E8%A1%A8-%E2%80%93%E6%9C%80%E7%BB%88%E4%B8%80%E8%87%B4%E6%80%A7"><span class="nav-number">8.</span> <span class="nav-text">本地消息表 –最终一致性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MQ-%E4%BA%8B%E5%8A%A1-%E2%80%93%E6%9C%80%E7%BB%88%E4%B8%80%E8%87%B4%E6%80%A7"><span class="nav-number">9.</span> <span class="nav-text">MQ 事务 –最终一致性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Saga-%E4%BA%8B%E5%8A%A1-%E2%80%93%E6%9C%80%E7%BB%88%E4%B8%80%E8%87%B4%E6%80%A7"><span class="nav-number">10.</span> <span class="nav-text">Saga 事务 –最终一致性</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Mr_Yao"
+      src="/images/avatar.gif">
+  <p class="site-author-name" itemprop="name">Mr_Yao</p>
+  <div class="site-description" itemprop="description">一只努力向上的小菜鸟</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">27</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">10</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+
+
+<script type="text/javascript" charset="utf-8" src="/js/tagcloud.js"></script>
+<script type="text/javascript" charset="utf-8" src="/js/tagcanvas.js"></script>
+<div class="widget-wrap">
+    <div id="myCanvasContainer" class="widget tagcloud">
+        <canvas width="250" height="250" id="resCanvas" style="width:100%">
+            <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/JAVA/" rel="tag">JAVA</a><span class="tag-list-count">14</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySql/" rel="tag">MySql</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Mybatis/" rel="tag">Mybatis</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Boot/" rel="tag">Spring Boot</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Tomcat/" rel="tag">Tomcat</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web3/" rel="tag">web3</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/" rel="tag">分布式事务</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E9%93%BE%E8%B7%AF%E8%BF%BD%E8%B8%AA/" rel="tag">分布式链路追踪</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86/" rel="tag">编译原理</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" rel="tag">计算机网络</a><span class="tag-list-count">1</span></li></ul>
+        </canvas>
+    </div>
+</div>
+
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yaocl.cn/2022/11/23/23distributedTransaction/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Mr_Yao">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yao">
+      <meta itemprop="description" content="一只努力向上的小菜鸟">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="分布式事务基础 | Yao">
+      <meta itemprop="description" content="分布式事务是指事务的参与者、支持事务的服务器、资源服务器以及事务管理器分别位于不同的分布式系统的不同节点之上。">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          分布式事务基础
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-11-23 10:27:40" itemprop="dateCreated datePublished" datetime="2022-11-23T10:27:40+08:00">2022-11-23</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/" itemprop="url" rel="index"><span itemprop="name">分布式事务</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>7k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>6 分钟</span>
+    </span>
+</div>
+
+            <div class="post-description">分布式事务是指事务的参与者、支持事务的服务器、资源服务器以及事务管理器分别位于不同的分布式系统的不同节点之上。</div>
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>事务是数据库执行过程中的一个逻辑单位，由一个有限的数据库操作序列构成。<br>事务有四个特性，习惯上被称为 ACID 特性：</p>
+<ul>
+<li>Atomicity(原子性)</li>
+<li>Consistency(一致性)</li>
+<li>Isolation(隔离性)</li>
+<li>Durability(持久性)</li>
+</ul>
+<h2 id="本地事物"><a href="#本地事物" class="headerlink" title="本地事物"></a>本地事物</h2><p>在系统发展初期，单体应用对应一个数据库，整个服务操作只涉及一个数据库资源，通过数据库自带的事务很容易实现 ACID，这类基于单个服务单一数据库资源访问的事务，被称为本地事务(Local Transaction)。</p>
+<p><img src="/2022/11/23/23distributedTransaction/1.png"></p>
+<h2 id="分布式事务"><a href="#分布式事务" class="headerlink" title="分布式事务"></a>分布式事务</h2><p>随着互联网的发展，微服务架构大规模的普及，软件系统由原来的单体应用转变为分布式应用。分布式系统一般由多个独立的子系统组成，多个子系统通过网络通信互相协作配合完成各个功能。</p>
+<p>分布式事务是指事务的参与者、支持事务的服务器、资源服务器以及事务管理器分别位于不同的分布式系统的不同节点之上。比如在一个电商系统中，一条订单的生成涉及库存、订单、支付等不同的服务，不同的服务之间要么全成功、要么全失败，保证事务的 ACID 特性。</p>
+<p><img src="/2022/11/23/23distributedTransaction/2.png"></p>
+<p>本质上来说，分布式事务就是为了保证不同数据库的数据一致性。</p>
+<p>在分布式系统中数据一致性又可以划分出多个一致性模型</p>
+<ul>
+<li><p>强一致性：任何一次读都能读到某个数据的最近一次写的数据。系统中的所有进程，看到的操作顺序，都和全局时钟下的顺序一致。简言之，在任意时刻，所有节点中的数据是一样的。</p>
+</li>
+<li><p>弱一致性：数据更新后，如果能容忍后续的访问只能访问到部分或者全部访问不到，则是弱一致性。</p>
+</li>
+<li><p>最终一致性：不保证在任意时刻任意节点上的同一份数据都是相同的，但是随着时间的迁移，不同节点上的同一份数据总是在向趋同的方向变化。简单说，就是在一段时间后，节点间的数据会最终达到一致状态。</p>
+</li>
+</ul>
+<p>在解决分布式事物的数据一致性问题上，产生了多个相关的理论。</p>
+<h2 id="CAP-理论"><a href="#CAP-理论" class="headerlink" title="CAP 理论"></a>CAP 理论</h2><p>CAP 定理又被称作布鲁尔定理，是加州大学的计算机科学家布鲁尔在 2000 年提出的一个猜想。2002 年，麻省理工学院的赛斯·吉尔伯特和南希·林奇发表了布鲁尔猜想的证明，使之成为分布式计算领域公认的一个定理。</p>
+<ul>
+<li>C : Consistency 一致性 , 所有实例节点同一时间看到是相同的数据</li>
+<li>A : Availability 可用性 , 不管是否成功，确保每一个请求都能接收到响应</li>
+<li>P : Partition tolerance 分区容错性 , 系统任意分区后，在网络故障时，仍能操作</li>
+</ul>
+<p>CAP 理论是指在一个分布式系统（指互相连接并共享数据的节点的集合）中，当涉及读写操作时，只能保证一致性、可用性、分区容错性者中的两个，另外一个必须被牺牲。</p>
+<p>在真实的分布式环境下，如果我们选择了 CA（一致性 + 可用性） 而放弃了 P（分区容错性），那么当发生分区现象时，为了保证 C（一致性），系统需要禁止写入，当有写入请求时，系统返回 error（例如，当前系统不允许写入），这又和 A(可用性) 冲突了，因为 A（可用性）要求返回 no error 和 no timeout。因此虽然在 CAP 理论定义是三个要素中只能取两个，但放到分布式环境下来，必须选择 P（分区容错）要素，因为网络本身无法做到 100% 可靠，有可能出故障，所以分区是一个必然的现象。<br>也就说在真是环境下我们只能选择 CP（一致性 + 分区容错性） 或者 AP （可用性 + 分区容错性）架构，在一致性和可用性做折中选择。</p>
+<p>虽然 CAP 理论告诉我们分布式系统只能选择 AP 或者 CP，但实际上并不是说整个系统只能选择 AP 或者 CP，在 CAP 理论落地实践时，我们需要将系统内的数据按照不同的应用场景和要求进行分类，每类数据选择不同的策略（CP 还是 AP），而不是直接限定整个系统所有数据都是同一策略。</p>
+<h2 id="BASE-理论–CAP-理论的延伸"><a href="#BASE-理论–CAP-理论的延伸" class="headerlink" title="BASE 理论–CAP 理论的延伸"></a>BASE 理论–CAP 理论的延伸</h2><p>由于在分布式系统中 C、A、P 三者都无法抛弃，但 CAP 定理限制三者无法同时满足，这种情况，我们会选择尽量靠近 CAP 定理，即尽量让 C、A、P 都满足，在此所趋下，出现了 BASE 定理。</p>
+<p>BASE 是 Basically Available（基本可用）、Soft state（软状态）和 Eventually consistent （最终一致性）三个短语的缩写。核心思想是即使无法做到强一致性（CAP 的一致性就是强一致性），但应用可以采用适合的方式达到最终一致性。</p>
+<ul>
+<li>BA：Basically Available 基本可用，分布式系统在出现故障的时候，允许损失部分可用性，即保证核心可用。<br>电商大促时，为了应对访问量激增，部分用户可能会被引导到降级页面，服务层也可能只提供降级服务。这就是损失部分可用性的体现。</li>
+<li>S：Soft State 软状态，允许系统存在中间状态，而该中间状态不会影响系统整体可用性。<br>分布式存储中一般一份数据至少会有三个副本，允许不同节点间副本同步的延时就是软状态的体现。mysql replication 的异步复制也是一种体现。</li>
+<li>E: Eventual Consistency 最终一致性， 系统中的所有数据副本经过一定时间后，最终能够达到一致的状态。</li>
+</ul>
+<p>BASE 理论本质上是对 CAP 的延伸和补充，更具体地说，是对 CAP 中 AP 方案的一个补充。</p>
+<p>BASE和ACID的区别与联系</p>
+<ul>
+<li>ACID是传统数据库常用的设计理念, 追求强一致性模型。</li>
+<li>BASE支持的是大型分布式系统，提出通过牺牲强一致性获得高可用性</li>
+</ul>
+<p>ACID和BASE代表了两种截然相反的设计哲学。<br>总的来说，BASE 理论面向大型高可用可扩展的分布式系统，与ACID这种强一致性模型不同，常常是牺牲强一致性来获得可用性，并允许数据在一段时间是不一致的。虽然两者处于（一致性-可用性）分布图的两级，但两者并不是孤立的，对于分布式系统来说，往往依据业务的不同和使用的系统组件不同，而需要灵活的调整一致性要求，也因此，常常会组合使用ACID和BASE。</p>
+<h2 id="柔性事务"><a href="#柔性事务" class="headerlink" title="柔性事务"></a>柔性事务</h2><p>不同于 ACID 的刚性事务，在分布式场景下基于 BASE 理论，就出现了柔性事务的概念。柔性事务下，在不影响系统整体可用性的情况下(Basically Available 基本可用)，允许系统存在数据不一致的中间状态(Soft State 软状态)，在经过数据同步的延时之后，最终数据能够达到一致。并不是完全放弃了 ACID，而是通过放宽一致性要求，借助本地事务来实现最终分布式事务一致性的同时也保证系统的吞吐。</p>
+<h2 id="XA-–强一致性"><a href="#XA-–强一致性" class="headerlink" title="XA –强一致性"></a>XA –强一致性</h2><p>由 Tuxedo 提出的 XA 是一个分布式事务协议，规定了事务管理器和资源管理器接口。XA 协议可以分为两部分，即事务管理器和本地资源管理器。</p>
+<ul>
+<li>事务管理器作为<code>协调者</code>，负责各个本地资源的提交和回滚。</li>
+<li>资源管理器就是分布式事务的<code>参与者</code>.其中资源管理通常是数据库。</li>
+</ul>
+<p>基于 XA 协议的，发展出了二阶段提交协议（The two-phase commit protocol，2PC）和三阶段提交协议（Three-phase commit protocol，3PC）。</p>
+<h3 id="2PC"><a href="#2PC" class="headerlink" title="2PC"></a>2PC</h3><p>二阶段提交的算法思路可以概括为：参与者将操作成败通知协调者，再由协调者根据所有参与者的反馈情报决定各参与者是否要提交操作还是中止操作。</p>
+<p>将事务的提交过程分为两个阶段来进行处理：准备阶段和提交阶段。</p>
+<p>0x1 准备阶段</p>
+<ol>
+<li> 协调者向所有参与者发送 CanCommit 操作请求，并等待参与者的响应。</li>
+<li>参与者接收到请求后，会执行请求中的事务操作，将 undo 和 redo 信息记入事务日志中，但是这时并不提交事务。<br> <img src="/2022/11/23/23distributedTransaction/3.png"><br> 若不成功，则发送“No”消息，表示终止操作。当所有的参与者都返回了操作结果（Yes 或 No 消息）后，系统进入了提交阶段。<br> <img src="/2022/11/23/23distributedTransaction/4.png"></li>
+</ol>
+<p>0x2 提交阶段</p>
+<p>协调者会根据所有参与者返回的信息向参与者发送 DoCommit 或 DoAbort 指令</p>
+<ol>
+<li><p>若协调者收到的都是“Yes”消息，则向参与者发送“DoCommit”消息，参与者会提交事务并释放资源，然后向协调者返回“Ack”消息。<br><img src="/2022/11/23/23distributedTransaction/5.png"></p>
+</li>
+<li><p>如果协调者收到的消息中包含“No”消息，则向所有参与者发送“DoAbort”消息，此时发送“Yes”的参与者会根据之前执行操作时的回滚日志对操作进行回滚，然后所有参与者会向协调者发送“Ack”消息；<br><img src="/2022/11/23/23distributedTransaction/6.png"></p>
+</li>
+</ol>
+<ol start="3">
+<li>协调者接收到所有参与者的“Ack”消息，就意味着整个事务结束了。</li>
+</ol>
+<p>2PC 实现起来比较简单，但是实际项目中使用比较少，主要因为以下问题：</p>
+<p>性能问题：所有参与节点都是事务阻塞型的，占用系统资源，容易导致性能瓶颈。</p>
+<p>可靠性问题：如果协调者出现故障，参与者将一直处于锁定状态。</p>
+<p>数据一致性问题：在提交阶段，如果发生局部网络问题，一部分事务参与者收到了提交消息，另一部分事务参与者没收到提交消息，那么就导致了节点之间数据的不一致。</p>
+<h3 id="3PC"><a href="#3PC" class="headerlink" title="3PC"></a>3PC</h3><p>基于 2PC 基础上，3PC 对 2PC 进行了改进，引入了超时机制。同时将准备阶段拆分为 2 个阶段，多了一个 PreCommit 阶段。</p>
+<p>3PC 可以划分为 CanCommit 阶段、PreCommit 阶段、DoCommit 阶段。</p>
+<p>0x1 CanCommit 阶段</p>
+<ol>
+<li>协调者向所有参与者发送 “CanCommit” 请求，询问是否可以提交事务，并等待所有参与者答复。</li>
+<li>参与者收到 “CanCommit” 请求之后，回复 “Yes”，表示可以顺利执行事务；否则回复 “No”。</li>
+</ol>
+<p><img src="/2022/11/23/23distributedTransaction/7.png"></p>
+<p>0x2 PreCommit 阶段</p>
+<p>协调者根据参与者的回复情况，来决定是否可以进行 PreCommit 操作或中断事务。</p>
+<p>如果参与者返回的回复情况全部是 Yes</p>
+<ol>
+<li>协调者向所有参与者发送 “PreCommit” 请求，参与者进入到预提交阶段。</li>
+<li>参与者收到 “PreCommit” 请求后，执行事务操作，并将 undo 和 redo 信息记入事务日志中，但这时并不提交事务。</li>
+<li>参与者向协调者反馈执行成功 “Yes” 或失败响应 “No”。</li>
+</ol>
+<p><img src="/2022/11/23/23distributedTransaction/8.png"></p>
+<p>如果参与者返回的回复情况中包含 No，说明有一个事务执行失败。</p>
+<ol>
+<li>协调者向所有参与者发送 “Abort”请求</li>
+<li>参与者收到“Abort”消息之后，或超时后仍未收到协调者的消息，执行事务的中断操作。</li>
+</ol>
+<p>0x3 DoCommit 阶段</p>
+<p>协调者根据参与者的回复情况，来决定是否可以进行 DoCommit 操作 或 中断事务。</p>
+<p>如果参与者返回的回复情况全部是 YES</p>
+<ol>
+<li>协调者向所有参与者发送 “DoCommit” 消息。</li>
+<li>参与者接收到 “DoCommit” 消息之后，正式提交事务。完成事务提交之后，释放所有锁住的资源。</li>
+<li>参与者提交完事务之后，向协调者发送 “Ack” 响应</li>
+<li>协调者接收到所有参与者的 “Ack” 响应之后，完成事务。</li>
+</ol>
+<p><img src="/2022/11/23/23distributedTransaction/9.png"></p>
+<p>如果参与者返回的回复情况中包含 No，说明有一个事务执行失败。</p>
+<ol>
+<li>协调者向所有参与者发送 “Abort” 请求。</li>
+<li>参与者接收到 “Abort” 消息之后，利用其在 “PreCommit” 阶段记录的 undo 信息执行事务的回滚操作，并释放所有锁住的资源。</li>
+<li>参与者完成事务回滚之后，向协调者发送 “Ack” 消息。</li>
+<li>协调者接收到参与者反馈的 “Ack” 消息之后，执行事务的中断，并结束事务。</li>
+</ol>
+<p>相比二阶段提交，三阶段降低了阻塞范围，在等待超时后协调者或参与者会中断事务，避免了协调者单点问题。DoCommit 阶段中协调者出现问题时，参与者会继续提交事务。</p>
+<p>但是数据不一致问题依然存在，当在参与者收到 preCommit 请求后等待 DoCommit 指令时，此时如果协调者请求中断事务，而协调者无法与参与者正常通信，会导致参与者继续提交事务，造成数据不一致。</p>
+<h2 id="TCC-–最终一致性"><a href="#TCC-–最终一致性" class="headerlink" title="TCC –最终一致性"></a>TCC –最终一致性</h2><p>TCC（Try-Confirm-Cancel）的概念，最早是由 Pat Helland 于 2007 年发表的一篇名为《Life beyond Distributed Transactions:an Apostate’s Opinion》的论文提出。</p>
+<p>TCC 是服务化的二阶段编程模型， 针对每个操作，都要实现对应的确认和补偿操作，也就是业务逻辑的每个服务都需要实现 Try、Confirm、Cancel 三个操作，第一阶段由业务代码编排来调用 Try 接口进行资源预留，当所有参与者的 Try 接口都成功了，事务协调者提交事务，并调用参与者的 Confirm 接口真正提交业务操作，否则调用每个参与者的 Cancel 接口回滚事务，并且由于 Confirm 或者 Cancel 有可能会重试，因此对应的部分需要支持幂等。</p>
+<ul>
+<li>Try 阶段：尝试执行，完成所有业务检查（一致性）, 预留必须业务资源（准隔离性）</li>
+<li>Confirm 阶段： 确认执行真正执行业务，不作任何业务检查，只使用 Try 阶段预留的业务资源，Confirm 操作满足幂等性</li>
+<li>Cancel 阶段： 取消执行，释放 Try 阶段预留的业务资源 Cancel 操作满足幂等性 Cancel 阶段的异常和 Confirm 阶段异常处理方案基本上一致。</li>
+</ul>
+<p><img src="/2022/11/23/23distributedTransaction/10.png"></p>
+<p>TCC 事务机制相比于上面介绍的 XA，解决了其几个缺点：</p>
+<ol>
+<li>解决了协调者单点，由主业务方发起并完成这个业务活动。业务活动管理器也变成多点，引入集群。</li>
+<li>同步阻塞：引入超时，超时后进行补偿，并且不会锁定整个资源，将资源转换为业务逻辑形式，粒度变小。</li>
+<li>数据一致性，有了补偿机制之后，由业务活动管理器控制一致性</li>
+</ol>
+<p>但是TCC中Try、Confirm、Cancel 的操作需要业务来实现，耦合度过高。</p>
+<h2 id="本地消息表-–最终一致性"><a href="#本地消息表-–最终一致性" class="headerlink" title="本地消息表 –最终一致性"></a>本地消息表 –最终一致性</h2><p>本地消息表这个方案最初是 ebay 架构师 Dan Pritchett 在 2008 年发表给 ACM 的文章。核心思路是将分布式事务拆分成本地事务进行处理。 本地事物表方案可以将事务分为事务主动方和事物被动方。</p>
+<ul>
+<li>事务主动方: 分布式事务最先开始处理的事务方</li>
+<li>事务被动方: 在事务主动方之后处理的业务内的其他事务</li>
+</ul>
+<p>事务的主动方需要<code>额外新建事务消息表</code>，用于记录分布式事务的消息的发生、处理状态。整个业务流程：</p>
+<ol>
+<li>事务主动方在本地事务中处理业务更新操作和写消息表操作。</li>
+<li>事务主动方通过消息中间件，通知事务被动方处理事务。</li>
+<li>事务被动方通过消息中间件，通知事务主动方事务已处理的消息</li>
+</ol>
+<p><img src="/2022/11/23/23distributedTransaction/11.png"></p>
+<p>本地消息表实现的条件：</p>
+<ul>
+<li>消费者与生成者的接口都要支持幂等</li>
+<li>生产者需要额外的创建消息表</li>
+<li>需要提供补偿逻辑，如果消费者业务失败，需要生产者支持回滚操作</li>
+</ul>
+<p>容错机制：</p>
+<ul>
+<li>步骤 1 失败时，事务直接回滚</li>
+<li>步骤 2、3 写 mq 与消费 mq 失败会进行重试</li>
+<li>步骤 3 业务失败事务被动方向事务主动方发起事务回滚操作</li>
+</ul>
+<h2 id="MQ-事务-–最终一致性"><a href="#MQ-事务-–最终一致性" class="headerlink" title="MQ 事务 –最终一致性"></a>MQ 事务 –最终一致性</h2><p>有些 MQ 的实现支持事务，比如 RocketMQ ，基于 MQ 的分布式事务方案其实是对本地消息表的封装。以 RocketMQ 为例介绍 MQ 的分布式事务方案。</p>
+<ol>
+<li>发送方向 MQ 服务端(MQ Server)发送 half 消息。这个 half 消息与普通消息的区别在于，在事物提交之前，这个消息对订阅方来说是不可见的，订阅方不会消费这个消息。</li>
+<li>MQ Server 将消息持久化成功之后，向发送方 ACK 确认消息已经发送成功。</li>
+<li>发送方开始执行本地事务逻辑。</li>
+<li>如果事务提交成功，将会发送确认消息（commit 或是 rollback）至 MQ Server。</li>
+<li>MQ Server 收到 commit 状态则将半消息标记为可投递，订阅方最终将收到该消息；MQ Server 收到 rollback 状态则删除half消息，订阅方将不会接受该消息。</li>
+</ol>
+<p><img src="/2022/11/23/23distributedTransaction/12.png"></p>
+<p>异常情况 1：如果发送方发送 commit 或 rollback 消息失败，未到达消息集群</p>
+<ul>
+<li>MQ Server 会发起消息回查</li>
+<li>发送方收到回查消息后，会检查本地事务的执行结果</li>
+<li>根据本地事务的执行结果重新发送 commit 或 rollback 消息</li>
+<li>MQ Server 根据接收到的消息（commit 或 rollback）判断消息是否可消费或直接删除</li>
+</ul>
+<p>异常情况 2：接收方消费失败或消费超时</p>
+<ul>
+<li>一直重试消费，直到事务订阅方消费消息成功，整个过程可能会导致重复消费问题，所以业务逻辑需要保证幂等性</li>
+</ul>
+<p>异常情况 3：消息已消费，但接收方业务处理失败</p>
+<ul>
+<li>通过 MQ Server 通知发送方进行补偿或事务回滚</li>
+</ul>
+<h2 id="Saga-事务-–最终一致性"><a href="#Saga-事务-–最终一致性" class="headerlink" title="Saga 事务 –最终一致性"></a>Saga 事务 –最终一致性</h2><p>Saga 事务源于 1987 年普林斯顿大学的 Hecto 和 Kenneth 发表的如何处理 long lived transaction（长活事务）论文，Saga 事务核心思想是将长事务拆分为多个本地短事务，由 Saga 事务协调器协调，如果正常结束那就正常完成，如果某个步骤失败，则根据相反顺序一次调用补偿操作。</p>
+<p>Saga 事务基本协议如下：</p>
+<p>每个 Saga 事务由一系列幂等的有序子事务(sub-transaction) Ti 组成。<br>每个 Ti 都有对应的幂等补偿动作 Ci，补偿动作用于撤销 Ti 造成的结果。</p>
+<p>Saga 的执行顺序有两种：</p>
+<ul>
+<li>T1, T2, T3, …, Tn</li>
+<li>T1, T2, …, Tj, Cj,…, C2, C1，其中 0 &lt; j &lt; n</li>
+</ul>
+<p>Saga 定义了两种恢复策略：</p>
+<ul>
+<li>向前恢复(forward recovery)<br>适用于必须要成功的场景，发生失败进行重试，执行顺序是类似于这样的：T1, T2, …, Tj(失败), Tj(重试),…, Tn，其中 j 是发生错误的子事务(sub-transaction)。该情况下不需要 Ci。</li>
+</ul>
+<p><img src="/2022/11/23/23distributedTransaction/13.png"></p>
+<ul>
+<li>向后恢复(backward recovery)<br>如果任一子事务失败，补偿所有已完成的事务。即上面提到的第二种执行顺序，其中 j 是发生错误的 sub-transaction，这种做法的效果是撤销掉之前所有成功的 sub-transation，使得整个 Saga 的执行结果撤销。</li>
+</ul>
+<p><img src="/2022/11/23/23distributedTransaction/14.png"></p>
+<p>Saga 事务常见的有两种不同的实现方式：</p>
+<ol>
+<li>命令协调(Order Orchestrator)：中央协调器负责集中处理事件的决策和业务逻辑排序</li>
+</ol>
+<p><img src="/2022/11/23/23distributedTransaction/15.png"></p>
+<ol start="2">
+<li>事件编排 (Event Choreography)：没有中央协调器（没有单点风险）时，每个服务产生并观察其他服务的事件，并决定是否应采取行动。<br>在事件编排方法中，第一个服务执行一个事务，然后发布一个事件。该事件被一个或多个服务进行监听，这些服务再执行本地事务并发布（或不发布）新的事件。<br>当最后一个服务执行本地事务并且不发布任何事件时，意味着分布式事务结束，或者它发布的事件没有被任何 Saga 参与者听到都意味着事务结束。</li>
+</ol>
+<p><img src="/2022/11/23/23distributedTransaction/16.png"></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>请我一杯咖啡吧！</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="/images/wechatpay.png" alt="Mr_Yao 微信">
+        <span>微信</span>
+      </div>
+      <div>
+        <img src="/images/alipay.png" alt="Mr_Yao 支付宝">
+        <span>支付宝</span>
+      </div>
+
+  </div>
+</div>
+
+          <div class="followme">
+  <span>欢迎关注我的其它发布渠道</span>
+
+  <div class="social-list">
+
+      <div class="social-item">
+          <span class="social-link">
+            <span class="icon">
+              <i class="fab fa-weixin"></i>
+            </span>
+
+            <span class="label">微信公众号</span>
+          </span>
+
+          <img class="social-item-img" src="/images/wechat_channel.jpg">
+      </div>
+  </div>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/" rel="tag"><i class="fa fa-tag"></i> 分布式事务</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/10/10/22smartContract/" rel="prev" title="智能合约">
+                  <i class="fa fa-chevron-left"></i> 智能合约
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2022/12/19/24seata/" rel="next" title="分布式事务框架Seata">
+                  分布式事务框架Seata <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments utterances-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Mr_Yao</span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+<script class="next-config" data-name="utterances" type="application/json">{"enable":true,"repo":"yaocl0/blogtalk","issue_term":"pathname","theme":"github-light"}</script>
+<script src="/js/third-party/comments/utterances.js"></script>
+
+</body>
+</html>

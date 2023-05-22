@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 5.4.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="google-site-verification" content="MBUPLTqs-crTMrXutrEiB0jYb3zBMf1ua13kTbOEqY">
+  <meta name="baidu-site-verification" content="codeva-PHrgdBFiZ7">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"yaocl.cn","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.16.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"style":"flat"},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"utterances","storage":true,"lazyload":false,"nav":null,"activeClass":"utterances"},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/db.json","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="可以把它理解成一个迭代器，但是只能遍历一次，就像是流水一样，要处理的元素在流中传输，并且可以在流中设置多个处理节点，元素在经过每个节点后会被节点的逻辑所处理。比如可以进行过滤、排序、转换等操作。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java8中的Stream流">
+<meta property="og:url" content="http://yaocl.cn/2022/08/20/20stream/index.html">
+<meta property="og:site_name" content="Yao">
+<meta property="og:description" content="可以把它理解成一个迭代器，但是只能遍历一次，就像是流水一样，要处理的元素在流中传输，并且可以在流中设置多个处理节点，元素在经过每个节点后会被节点的逻辑所处理。比如可以进行过滤、排序、转换等操作。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://yaocl.cn/2022/08/20/20stream/1.png">
+<meta property="og:image" content="http://yaocl.cn/2022/08/20/20stream/2.png">
+<meta property="og:image" content="http://yaocl.cn/2022/08/20/20stream/3.png">
+<meta property="og:image" content="http://yaocl.cn/2022/08/20/20stream/4.png">
+<meta property="og:image" content="http://yaocl.cn/2022/08/20/20stream/5.png">
+<meta property="og:image" content="http://yaocl.cn/2022/08/20/20stream/6.png">
+<meta property="og:image" content="http://yaocl.cn/2022/08/20/20stream/7.png">
+<meta property="og:image" content="http://yaocl.cn/2022/08/20/20stream/8.png">
+<meta property="article:published_time" content="2022-08-20T06:15:48.000Z">
+<meta property="article:modified_time" content="2023-05-22T01:00:59.040Z">
+<meta property="article:author" content="Mr_Yao">
+<meta property="article:tag" content="JAVA">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://yaocl.cn/2022/08/20/20stream/1.png">
+
+
+<link rel="canonical" href="http://yaocl.cn/2022/08/20/20stream/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://yaocl.cn/2022/08/20/20stream/","path":"2022/08/20/20stream/","title":"Java8中的Stream流"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Java8中的Stream流 | Yao</title>
+  
+
+  <script src="/js/third-party/analytics/baidu-analytics.js"></script>
+  <script async src="https://hm.baidu.com/hm.js?0202a37701ab53d1c3a4b778f332cd73"></script>
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="Yao" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Yao</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li><li class="menu-item menu-item-message"><a href="/message/" rel="section"><i class="fa fa fa-comments fa-fw"></i>留言</a></li><li class="menu-item menu-item-books"><a href="/books/" rel="section"><i class="fa  fa-book fa-fw"></i>阅读</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9A%E4%B9%89"><span class="nav-number">1.</span> <span class="nav-text">定义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8"><span class="nav-number">2.</span> <span class="nav-text">使用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E6%BA%90%E7%94%9F%E6%88%90%E6%B5%81"><span class="nav-number">2.1.</span> <span class="nav-text">数据源生成流</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%AD%E9%97%B4%E6%93%8D%E4%BD%9C"><span class="nav-number">2.2.</span> <span class="nav-text">中间操作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BB%88%E7%AB%AF%E6%93%8D%E4%BD%9C"><span class="nav-number">2.3.</span> <span class="nav-text">终端操作</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8E%9F%E7%90%86"><span class="nav-number">3.</span> <span class="nav-text">原理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E6%BA%90%E7%94%9F%E6%88%90%E6%B5%81-1"><span class="nav-number">3.1.</span> <span class="nav-text">数据源生成流</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%AD%E9%97%B4%E6%93%8D%E4%BD%9C-1"><span class="nav-number">3.2.</span> <span class="nav-text">中间操作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BB%88%E7%AB%AF%E6%93%8D%E4%BD%9C-1"><span class="nav-number">3.3.</span> <span class="nav-text">终端操作</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Mr_Yao"
+      src="/images/avatar.gif">
+  <p class="site-author-name" itemprop="name">Mr_Yao</p>
+  <div class="site-description" itemprop="description">一只努力向上的小菜鸟</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">27</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">10</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+
+
+<script type="text/javascript" charset="utf-8" src="/js/tagcloud.js"></script>
+<script type="text/javascript" charset="utf-8" src="/js/tagcanvas.js"></script>
+<div class="widget-wrap">
+    <div id="myCanvasContainer" class="widget tagcloud">
+        <canvas width="250" height="250" id="resCanvas" style="width:100%">
+            <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/JAVA/" rel="tag">JAVA</a><span class="tag-list-count">14</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySql/" rel="tag">MySql</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Mybatis/" rel="tag">Mybatis</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Boot/" rel="tag">Spring Boot</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Tomcat/" rel="tag">Tomcat</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web3/" rel="tag">web3</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/" rel="tag">分布式事务</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E9%93%BE%E8%B7%AF%E8%BF%BD%E8%B8%AA/" rel="tag">分布式链路追踪</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86/" rel="tag">编译原理</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" rel="tag">计算机网络</a><span class="tag-list-count">1</span></li></ul>
+        </canvas>
+    </div>
+</div>
+
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yaocl.cn/2022/08/20/20stream/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Mr_Yao">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yao">
+      <meta itemprop="description" content="一只努力向上的小菜鸟">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Java8中的Stream流 | Yao">
+      <meta itemprop="description" content="可以把它理解成一个迭代器，但是只能遍历一次，就像是流水一样，要处理的元素在流中传输，并且可以在流中设置多个处理节点，元素在经过每个节点后会被节点的逻辑所处理。比如可以进行过滤、排序、转换等操作。">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Java8中的Stream流
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-08-20 14:15:48" itemprop="dateCreated datePublished" datetime="2022-08-20T14:15:48+08:00">2022-08-20</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/JAVA/" itemprop="url" rel="index"><span itemprop="name">JAVA</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>9.5k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>9 分钟</span>
+    </span>
+</div>
+
+            <div class="post-description">可以把它理解成一个迭代器，但是只能遍历一次，就像是流水一样，要处理的元素在流中传输，并且可以在流中设置多个处理节点，元素在经过每个节点后会被节点的逻辑所处理。比如可以进行过滤、排序、转换等操作。</div>
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h2 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h2><p>什么是Stream流，Java doc中是这样写的</p>
+<blockquote>
+<p>A sequence of elements supporting sequential and parallel aggregate operations</p>
+</blockquote>
+<p>翻译一下就是一个支持顺序和并行聚合操作的元素序列。<br>可以把它理解成一个迭代器，但是只能遍历一次，就像是流水一样，要处理的元素在流中传输，并且可以在流中设置多个处理节点，元素在经过每个节点后会被节点的逻辑所处理。比如可以进行过滤、排序、转换等操作。</p>
+<p>Stream流的使用可以分为三个步骤：</p>
+<ul>
+<li>数据源，创建流</li>
+<li>中间操作，可以有多个，生成一个新的流</li>
+<li>终端操作，只能有一个，放在最后，代表流中止。</li>
+</ul>
+<p>Stream流有几个特点：<br>1、Stream流一般不会改变数据源，只会生成一个新的数据流。<br>2、Stream流不会存储数据，只会根据设置的操作节点处理数据。<br>3、Stream流是延迟执行的，只有在调用终端操作后才会进行流转。</p>
+<p>看一下Stream的结构<br><img src="/2022/08/20/20stream/1.png" alt="stream"></p>
+<h2 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h2><h3 id="数据源生成流"><a href="#数据源生成流" class="headerlink" title="数据源生成流"></a>数据源生成流</h3><ul>
+<li>如果是集合的话，可以直接使用<code>stream()</code>创建流。</li>
+<li>如果是数组的话，可以使用<code>Arrays.stream()</code>或<code>Stream.of()</code>来创建流。<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 集合生成流</span></span><br><span class="line">List&lt;String&gt; strList = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">Stream&lt;String&gt; stream = strList.stream();</span><br><span class="line"></span><br><span class="line"><span class="comment">//数据生成流</span></span><br><span class="line">String[] strs = <span class="keyword">new</span> String[]&#123;<span class="string">&quot;1&quot;</span>,<span class="string">&quot;2&quot;</span>,<span class="string">&quot;3&quot;</span>&#125;;</span><br><span class="line">Stream&lt;String&gt; stream1 = Arrays.stream(strs);</span><br><span class="line">Stream&lt;String&gt; stream2 = Stream.of(strs);</span><br></pre></td></tr></table></figure>
+<h3 id="中间操作"><a href="#中间操作" class="headerlink" title="中间操作"></a>中间操作</h3>在上边Stream定义中，返回是<code>Stream</code>类型的大多数都是中间操作，入参大多数都是函数式编程，不熟悉的可以看看这篇&lt;Java函数式编程&gt;。常用的中间操作有</li>
+<li>过滤操作 <code>filter()</code><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Arrays.stream(strs).filter(s -&gt; s.equals(<span class="string">&quot;1&quot;</span>));</span><br></pre></td></tr></table></figure></li>
+<li>排序操作 <code>sorted()</code><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Arrays.stream(strs).sorted();</span><br></pre></td></tr></table></figure></li>
+<li>去重操作 <code>distinct()</code><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Arrays.stream(strs).distinct();</span><br></pre></td></tr></table></figure></li>
+<li>映射操作，将流中元素转换成新的元素<ul>
+<li><code>mapToInt()</code>转换成Integer类型</li>
+<li><code>mapToLong()</code>转换成Long类型</li>
+<li><code>mapToDouble()</code>转换成Double类型</li>
+<li><code>map()</code> 自定义转换类型，这是一个使用频率非常高的方法。<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//将字符串转换成Integer</span></span><br><span class="line">Arrays.stream(strs).mapToInt(s -&gt; Integer.valueOf(s));</span><br><span class="line"><span class="comment">//将字符串转换成Long</span></span><br><span class="line">Arrays.stream(strs).mapToLong(s -&gt; Long.valueOf(s));</span><br><span class="line"><span class="comment">//将字符串转换成Doublde</span></span><br><span class="line">Arrays.stream(strs).mapToDouble(s -&gt; Double.valueOf(s));</span><br><span class="line"><span class="comment">//自定义转换的类型</span></span><br><span class="line">Arrays.stream(strs).map(s -&gt; <span class="keyword">new</span> BigDecimal(s));</span><br></pre></td></tr></table></figure>
+中间操作是可以有多个的，我们可以根据业务功能组合多个中间操作，比如求数组中字符串包含s的字符串长度排序<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Arrays.stream(strs).filter(e-&gt;e.contains(<span class="string">&quot;s&quot;</span>)).map(String::length).sorted();</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+</ul>
+<h3 id="终端操作"><a href="#终端操作" class="headerlink" title="终端操作"></a>终端操作</h3><p>终端操作，表示结束流操作，是在流的最后，常用的有</p>
+<ul>
+<li>统计 <code>count()</code><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">long</span> count = Arrays.stream(strs).count();</span><br><span class="line"><span class="comment">// count=3</span></span><br></pre></td></tr></table></figure></li>
+<li>获取最小值 <code>min()</code><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 将字符串转换成Interger类型再比较大小</span></span><br><span class="line"> OptionalInt min = Arrays.stream(strs).mapToInt(Integer::valueOf).min();</span><br><span class="line"> System.out.println(min.getAsInt());</span><br><span class="line"> <span class="comment">// 1</span></span><br></pre></td></tr></table></figure></li>
+<li>获取最大值 <code>max()</code><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">OptionalInt max = Arrays.stream(strs).mapToInt(Integer::valueOf).max();</span><br><span class="line">System.out.println(max.getAsInt());</span><br><span class="line"><span class="comment">// 3</span></span><br></pre></td></tr></table></figure></li>
+<li>匹配<ul>
+<li><code>anyMatch()</code>，只要有一个匹配就返回<code>true</code></li>
+<li><code>allMatch()</code>，只有全部匹配才返回<code>true</code></li>
+<li><code>noneMatch()</code>，只要有一个匹配就返回 <code>false</code><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">boolean</span> all = Arrays.stream(strs).allMatch(s -&gt; s.equals(<span class="string">&quot;2&quot;</span>));</span><br><span class="line"><span class="keyword">boolean</span> any = Arrays.stream(strs).anyMatch(s -&gt; s.equals(<span class="string">&quot;2&quot;</span>));</span><br><span class="line"><span class="keyword">boolean</span> none = Arrays.stream(strs).noneMatch(s -&gt; s.equals(<span class="string">&quot;2&quot;</span>));</span><br><span class="line"><span class="comment">// all = false</span></span><br><span class="line"><span class="comment">// any = true</span></span><br><span class="line"><span class="comment">// none = false</span></span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li>组合 <code>reduce()</code>将Stream 中的元素组合起来，有两种用法<ul>
+<li><code>Optional reduce(BinaryOperator accumulator)</code> 没有起始值只有运算规则</li>
+<li><code>T reduce(T identity, BinaryOperator accumulator)</code>，有运算起始值和运算规则、返回的是和起始值一样的类型</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Integer[] integers = <span class="keyword">new</span> Integer[]&#123;<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>&#125;;</span><br><span class="line">Optional&lt;Integer&gt; reduce1 = Arrays.stream(integers).reduce((i1, i2) -&gt; i1 + i2);</span><br><span class="line">Integer reduce2 = Arrays.stream(integers).reduce(<span class="number">100</span>, (i1, i2) -&gt; i1 + i2);</span><br><span class="line"><span class="comment">// reduce1.get() = 6</span></span><br><span class="line"><span class="comment">// reduce2 = 106</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>转换 <code>collect()</code>，转换作用是将流再转换成集合或数组，这也是一个使用频率非常高的方法。<br><code>collect()</code>一般配合<code>Collectors</code>使用，<code>Collectors</code> 是一个收集器的工具类，内置了一系列收集器实现，比如<code>toList()</code> 转换成list集合，<code>toMap()</code>转换成Map,<code>toSet()</code>转换成Set集合,<code>joining()</code> 将元素收集到一个可以用分隔符指定的字符串中。<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">String[] strs = <span class="keyword">new</span> String[]&#123;<span class="string">&quot;11111&quot;</span>, <span class="string">&quot;222&quot;</span>, <span class="string">&quot;3&quot;</span>&#125;;</span><br><span class="line"><span class="comment">//统计每个字符串的长度</span></span><br><span class="line">List&lt;Integer&gt; lengths = Arrays.stream(strs).map(String::length).collect(Collectors.toList());</span><br><span class="line">String s = Arrays.stream(strs).collect(Collectors.joining(<span class="string">&quot;,&quot;</span>));</span><br><span class="line"><span class="comment">// lengths=[5,3,1]</span></span><br><span class="line"><span class="comment">// s = 11111,222,3</span></span><br></pre></td></tr></table></figure>
+合理的组合Steam操作，可以很大的提升生产力</li>
+</ul>
+<h2 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h2><p><img src="/2022/08/20/20stream/2.png"><br>Stream的实现类中，将Stream划分成了<code>Head</code>、<code>StatelessOp</code>和<code>StatefulOp</code>，<code>Head</code>控制数据流入，中间操作分为了<code>StatelessOp</code>和<code>StatefulOp</code>。</p>
+<p>StatelessOp代表无状态操作：每个数据的处理是独立的，不会影响或依赖之前的数据。像<code>filter()</code>、<code>map()</code>等。</p>
+<p>StatefulOp代表有状态操作：：处理时会记录状态，比如后面元素的处理会依赖前面记录的状态，或者拿到所有元素才能继续下去等这样有状态的操作，像<code>sorted()</code>。</p>
+<p>现在已下面代码为例，分析一下Stream的原理</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">list.stream()</span><br><span class="line">    .filter(e -&gt; e.length() &gt; <span class="number">1</span>)</span><br><span class="line">    .sorted()</span><br><span class="line">    .filter(e -&gt; e.equals(<span class="string">&quot;333&quot;</span>))</span><br><span class="line">    .collect(Collectors.toList());</span><br></pre></td></tr></table></figure>
+<h3 id="数据源生成流-1"><a href="#数据源生成流-1" class="headerlink" title="数据源生成流"></a>数据源生成流</h3><p>首先，进入到<code>list.stream()</code>里</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//Collection#stream</span></span><br><span class="line"></span><br><span class="line"> <span class="function"><span class="keyword">default</span> Stream&lt;E&gt; <span class="title">stream</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> StreamSupport.stream(spliterator(), <span class="keyword">false</span>);</span><br><span class="line"> &#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">default</span> Spliterator&lt;E&gt; <span class="title">spliterator</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> Spliterators.spliterator(<span class="keyword">this</span>, <span class="number">0</span>);</span><br><span class="line"> &#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//StreamSupport#stream</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> &lt;T&gt; <span class="function">Stream&lt;T&gt; <span class="title">stream</span><span class="params">(Spliterator&lt;T&gt; spliterator, <span class="keyword">boolean</span> parallel)</span> </span>&#123;</span><br><span class="line">    Objects.requireNonNull(spliterator);</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> ReferencePipeline.Head&lt;&gt;(spliterator,</span><br><span class="line">                                        StreamOpFlag.fromCharacteristics(spliterator),</span><br><span class="line">                                        parallel);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>将原数据封装成<code>Spliterator</code>，同时生成一个<code>Head</code>，将<code>Spliterator</code>放到<code>Head</code>中。</p>
+<p><img src="/2022/08/20/20stream/3.png"></p>
+<h3 id="中间操作-1"><a href="#中间操作-1" class="headerlink" title="中间操作"></a>中间操作</h3><p>接着分析中间操作<code>.filter(e -&gt; e.length() &gt; 1)</code>的代码</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//ReferencePipeline#filter</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">final</span> Stream&lt;P_OUT&gt; <span class="title">filter</span><span class="params">(Predicate&lt;? <span class="keyword">super</span> P_OUT&gt; predicate)</span> </span>&#123;</span><br><span class="line">    Objects.requireNonNull(predicate);</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> StatelessOp&lt;P_OUT, P_OUT&gt;(<span class="keyword">this</span>, StreamShape.REFERENCE,</span><br><span class="line">                                  StreamOpFlag.NOT_SIZED) &#123;</span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function">Sink&lt;P_OUT&gt; <span class="title">opWrapSink</span><span class="params">(<span class="keyword">int</span> flags, Sink&lt;P_OUT&gt; sink)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">new</span> Sink.ChainedReference&lt;P_OUT, P_OUT&gt;(sink) &#123;</span><br><span class="line">                <span class="meta">@Override</span></span><br><span class="line">                <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">begin</span><span class="params">(<span class="keyword">long</span> size)</span> </span>&#123;</span><br><span class="line">                    downstream.begin(-<span class="number">1</span>);</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                <span class="meta">@Override</span></span><br><span class="line">                <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">accept</span><span class="params">(P_OUT u)</span> </span>&#123;</span><br><span class="line">                    <span class="keyword">if</span> (predicate.test(u))</span><br><span class="line">                        downstream.accept(u);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>返回的是一个无状态操作<code>StatelessOp</code>，查看<code>StatelessOp</code>的构造函数</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// AbstractPipeline#AbstractPipeline</span></span><br><span class="line">  AbstractPipeline(AbstractPipeline&lt;?, E_IN, ?&gt; previousStage, <span class="keyword">int</span> opFlags) &#123;</span><br><span class="line">      <span class="keyword">if</span> (previousStage.linkedOrConsumed)</span><br><span class="line">          <span class="keyword">throw</span> <span class="keyword">new</span> IllegalStateException(MSG_STREAM_LINKED);</span><br><span class="line">      previousStage.linkedOrConsumed = <span class="keyword">true</span>;</span><br><span class="line">      previousStage.nextStage = <span class="keyword">this</span>;</span><br><span class="line"></span><br><span class="line">      <span class="keyword">this</span>.previousStage = previousStage;</span><br><span class="line">      <span class="keyword">this</span>.sourceOrOpFlags = opFlags &amp; StreamOpFlag.OP_MASK;</span><br><span class="line">      <span class="keyword">this</span>.combinedFlags = StreamOpFlag.combineOpFlags(opFlags, previousStage.combinedFlags);</span><br><span class="line">      <span class="keyword">this</span>.sourceStage = previousStage.sourceStage;</span><br><span class="line">      <span class="keyword">if</span> (opIsStateful())</span><br><span class="line">          sourceStage.sourceAnyStateful = <span class="keyword">true</span>;</span><br><span class="line">      <span class="keyword">this</span>.depth = previousStage.depth + <span class="number">1</span>;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<p>构造函数中有<code>previousStage.nextStage = this;</code>和<code>this.previousStage = previousStage;</code>，相当于将当前的<code>StatelessOp</code>操作拼接到<code>Head</code>后面，构成了一条双向链表。</p>
+<p><img src="/2022/08/20/20stream/4.png"></p>
+<p>再看后面的<code>.sorted().filter(e -&gt; e.equals(&quot;333&quot;)).limit(10)</code>，也会将操作添加到了双向链表后面。<code>.sorted()</code>在链表后面添加的是<code>StatefulOp</code>有状态操作。</p>
+<p><img src="/2022/08/20/20stream/5.png"></p>
+<h3 id="终端操作-1"><a href="#终端操作-1" class="headerlink" title="终端操作"></a>终端操作</h3><p>最后走到终端操作<code>.collect(Collectors.toList())</code>。进入到<code>collect()</code> 中</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//ReferencePipeline#collect</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">final</span> &lt;R, A&gt; <span class="function">R <span class="title">collect</span><span class="params">(Collector&lt;? <span class="keyword">super</span> P_OUT, A, R&gt; collector)</span> </span>&#123;</span><br><span class="line">    A container;</span><br><span class="line">    <span class="keyword">if</span> (isParallel()</span><br><span class="line">            &amp;&amp; (collector.characteristics().contains(Collector.Characteristics.CONCURRENT))</span><br><span class="line">            &amp;&amp; (!isOrdered() || collector.characteristics().contains(Collector.Characteristics.UNORDERED))) &#123;</span><br><span class="line">        container = collector.supplier().get();</span><br><span class="line">        BiConsumer&lt;A, ? <span class="keyword">super</span> P_OUT&gt; accumulator = collector.accumulator();</span><br><span class="line">        forEach(u -&gt; accumulator.accept(container, u));</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> &#123;</span><br><span class="line">        container = evaluate(ReduceOps.makeRef(collector));</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> collector.characteristics().contains(Collector.Characteristics.IDENTITY_FINISH)</span><br><span class="line">            ? (R) container</span><br><span class="line">            : collector.finisher().apply(container);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>并发操作先不看，直接看<code>container = evaluate(ReduceOps.makeRef(collector));</code>，<code>ReduceOps.makeRef()</code>返回是<code>TerminalOp</code>，代表的是终端操作。</p>
+<p><img src="/2022/08/20/20stream/6.png"></p>
+<p>进<code>evaluate()</code>中</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//AbstractPipeline#evaluate</span></span><br><span class="line"><span class="keyword">final</span> &lt;R&gt; <span class="function">R <span class="title">evaluate</span><span class="params">(TerminalOp&lt;E_OUT, R&gt; terminalOp)</span> </span>&#123;</span><br><span class="line">  <span class="function"><span class="keyword">assert</span> <span class="title">getOutputShape</span><span class="params">()</span> </span>== terminalOp.inputShape();</span><br><span class="line">    <span class="keyword">if</span> (linkedOrConsumed)</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IllegalStateException(MSG_STREAM_LINKED);</span><br><span class="line">    linkedOrConsumed = <span class="keyword">true</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> isParallel()</span><br><span class="line">            ? terminalOp.evaluateParallel(<span class="keyword">this</span>, sourceSpliterator(terminalOp.getOpFlags()))</span><br><span class="line">            : terminalOp.evaluateSequential(<span class="keyword">this</span>, sourceSpliterator(terminalOp.getOpFlags()));</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>先不管并行，进串行入<code>evaluateSequential()</code>中</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//ReduceOps#evaluateSequential</span></span><br><span class="line"><span class="keyword">public</span> &lt;P_IN&gt; <span class="function">R <span class="title">evaluateSequential</span><span class="params">(PipelineHelper&lt;T&gt; helper,</span></span></span><br><span class="line"><span class="params"><span class="function">                                    Spliterator&lt;P_IN&gt; spliterator)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> helper.wrapAndCopyInto(makeSink(), spliterator).get();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><code>makeSink()</code>将返回一个<code>Sink</code>实例，并作为参数和 spliterator 一起传入最后一个节点(terminalOp)的 wrapAndCopyInto() 方法</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//AbstractPipeline#wrapAndCopyInto</span></span><br><span class="line"><span class="keyword">final</span> &lt;P_IN, S extends Sink&lt;E_OUT&gt;&gt; <span class="function">S <span class="title">wrapAndCopyInto</span><span class="params">(S sink, Spliterator&lt;P_IN&gt; spliterator)</span> </span>&#123;</span><br><span class="line">    copyInto(wrapSink(Objects.requireNonNull(sink)), spliterator);</span><br><span class="line">    <span class="keyword">return</span> sink;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">final</span> &lt;P_IN&gt; <span class="function">Sink&lt;P_IN&gt; <span class="title">wrapSink</span><span class="params">(Sink&lt;E_OUT&gt; sink)</span> </span>&#123;</span><br><span class="line">     Objects.requireNonNull(sink);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> ( <span class="meta">@SuppressWarnings(&quot;rawtypes&quot;)</span> AbstractPipeline p=AbstractPipeline.<span class="keyword">this</span>; p.depth &gt; <span class="number">0</span>; p=p.previousStage) &#123;</span><br><span class="line">        sink = p.opWrapSink(p.previousStage.combinedFlags, sink);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> (Sink&lt;P_IN&gt;) sink;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><code>wrapSink()</code>将最后一个节点创建的 Sink 传入，并且看到里面有个 for 循环。这个 for 循环是从最后一个节点开始，到第二个节点结束。每一次循环都是将上一节点的 combinedFlags 和当前的 Sink 包起来生成一个新的 Sink 。这和前面拼接各个操作很类似，只不过拼接的是 Sink 的实现类的实例，方向相反。</p>
+<p><img src="/2022/08/20/20stream/7.png"></p>
+<p>到现在整个流水已经拼接完成。真正的数据处理在<code>copyInto()</code>中。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//AbstractPipeline#copyInto</span></span><br><span class="line"><span class="keyword">final</span> &lt;P_IN&gt; <span class="function"><span class="keyword">void</span> <span class="title">copyInto</span><span class="params">(Sink&lt;P_IN&gt; wrappedSink, Spliterator&lt;P_IN&gt; spliterator)</span> </span>&#123;</span><br><span class="line">    Objects.requireNonNull(wrappedSink);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (!StreamOpFlag.SHORT_CIRCUIT.isKnown(getStreamAndOpFlags())) &#123;</span><br><span class="line">        wrappedSink.begin(spliterator.getExactSizeIfKnown());</span><br><span class="line">        spliterator.forEachRemaining(wrappedSink);</span><br><span class="line">        wrappedSink.end();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> &#123;</span><br><span class="line">        copyIntoWithCancel(wrappedSink, spliterator);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><code>Sink</code>中有三个方法：</p>
+<ul>
+<li><code>begin</code>：节点开始准备</li>
+<li><code>accept</code>: 节点处理数据</li>
+<li><code>end</code>： 节点处理结束</li>
+</ul>
+<p><code>Sink</code>与操作是相关的，不同的<code>Sink</code>有不同的职责，无状态操作的 Sink 接收到通知或者数据，处理完了会马上通知自己的下游。有状态操作的 Sink 则像有一个缓冲区一样，它会等要处理的数据处理完了才开始通知下游，并将自己处理的结果传递给下游。</p>
+<p>比如<code>filter</code>这种无状态的操作，处理完数据会直接交给下游，而像<code>sorted</code>这种无有状态的操作在<code>begin</code>阶段会先创建一个容器，<code>accept</code>会将流转过来的数据保存起来，最后在执行 <code>end</code>方法时才正在开始排序。排序之后再将数据，采用同样的方式依次传递给下游节点。<br><img src="/2022/08/20/20stream/8.png"></p>
+<p>wrapAndCopyInto() 返回了 TerminalOps 创建的 Sink，这时候它里面已经包含了最终处理的结果。调用它的 get() 方法就获得了最终的结果。</p>
+<p><code>Steam</code>还可以支持并行流，把<code>list.stream()</code>换成<code>list.parallelStream()</code>即可使用并行操作。</p>
+<p>并行过程中，构建操作链的双向链表是不变的，区别实在构建完后的操作</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//AbstractPipeline#evaluate</span></span><br><span class="line"><span class="keyword">final</span> &lt;R&gt; <span class="function">R <span class="title">evaluate</span><span class="params">(TerminalOp&lt;E_OUT, R&gt; terminalOp)</span> </span>&#123;</span><br><span class="line">  <span class="function"><span class="keyword">assert</span> <span class="title">getOutputShape</span><span class="params">()</span> </span>== terminalOp.inputShape();</span><br><span class="line">    <span class="keyword">if</span> (linkedOrConsumed)</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IllegalStateException(MSG_STREAM_LINKED);</span><br><span class="line">    linkedOrConsumed = <span class="keyword">true</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> isParallel()</span><br><span class="line">            ? terminalOp.evaluateParallel(<span class="keyword">this</span>, sourceSpliterator(terminalOp.getOpFlags()))</span><br><span class="line">            : terminalOp.evaluateSequential(<span class="keyword">this</span>, sourceSpliterator(terminalOp.getOpFlags()));</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>这次进入到 <code>evaluateParallel()</code>中</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//ReduceOps#evaluateSequential</span></span><br><span class="line"><span class="keyword">public</span> &lt;P_IN&gt; <span class="function">R <span class="title">evaluateParallel</span><span class="params">(PipelineHelper&lt;T&gt; helper,</span></span></span><br><span class="line"><span class="params"><span class="function">                                         Spliterator&lt;P_IN&gt; spliterator)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> ReduceTask&lt;&gt;(<span class="keyword">this</span>, helper, spliterator).invoke().get();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><code>ReduceTask</code>继承自<code>ForkJoinTask</code>，<code>Steam</code>的并行底层用的是ForkJoin框架。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>请我一杯咖啡吧！</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="/images/wechatpay.png" alt="Mr_Yao 微信">
+        <span>微信</span>
+      </div>
+      <div>
+        <img src="/images/alipay.png" alt="Mr_Yao 支付宝">
+        <span>支付宝</span>
+      </div>
+
+  </div>
+</div>
+
+          <div class="followme">
+  <span>欢迎关注我的其它发布渠道</span>
+
+  <div class="social-list">
+
+      <div class="social-item">
+          <span class="social-link">
+            <span class="icon">
+              <i class="fab fa-weixin"></i>
+            </span>
+
+            <span class="label">微信公众号</span>
+          </span>
+
+          <img class="social-item-img" src="/images/wechat_channel.jpg">
+      </div>
+  </div>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/JAVA/" rel="tag"><i class="fa fa-tag"></i> JAVA</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/07/15/19consensus/" rel="prev" title="区块链的灵魂-共识机制">
+                  <i class="fa fa-chevron-left"></i> 区块链的灵魂-共识机制
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2022/09/15/21compile/" rel="next" title="编译器对代码做了哪些工作">
+                  编译器对代码做了哪些工作 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments utterances-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Mr_Yao</span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+<script class="next-config" data-name="utterances" type="application/json">{"enable":true,"repo":"yaocl0/blogtalk","issue_term":"pathname","theme":"github-light"}</script>
+<script src="/js/third-party/comments/utterances.js"></script>
+
+</body>
+</html>

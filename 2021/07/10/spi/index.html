@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 5.4.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="google-site-verification" content="MBUPLTqs-crTMrXutrEiB0jYb3zBMf1ua13kTbOEqY">
+  <meta name="baidu-site-verification" content="codeva-PHrgdBFiZ7">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"yaocl.cn","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.16.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"style":"flat"},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"utterances","storage":true,"lazyload":false,"nav":null,"activeClass":"utterances"},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/db.json","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="SPI 全名：Service Provider Interface，是 JDK 内置的一种服务发现机制，可以将服务接口与服务发现分离以达到解耦的效果。可以提升程序的可扩展性。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java SPI机制">
+<meta property="og:url" content="http://yaocl.cn/2021/07/10/spi/index.html">
+<meta property="og:site_name" content="Yao">
+<meta property="og:description" content="SPI 全名：Service Provider Interface，是 JDK 内置的一种服务发现机制，可以将服务接口与服务发现分离以达到解耦的效果。可以提升程序的可扩展性。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://yaocl.cn/2021/07/10/spi/spi.png">
+<meta property="og:image" content="http://yaocl.cn/2021/07/10/spi/source.png">
+<meta property="og:image" content="http://yaocl.cn/2021/07/10/spi/jdbc.png">
+<meta property="og:image" content="http://yaocl.cn/2021/07/10/spi/jdbc2.png">
+<meta property="article:published_time" content="2021-07-10T08:46:38.000Z">
+<meta property="article:modified_time" content="2023-05-22T01:00:59.073Z">
+<meta property="article:author" content="Mr_Yao">
+<meta property="article:tag" content="JAVA">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://yaocl.cn/2021/07/10/spi/spi.png">
+
+
+<link rel="canonical" href="http://yaocl.cn/2021/07/10/spi/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://yaocl.cn/2021/07/10/spi/","path":"2021/07/10/spi/","title":"Java SPI机制"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Java SPI机制 | Yao</title>
+  
+
+  <script src="/js/third-party/analytics/baidu-analytics.js"></script>
+  <script async src="https://hm.baidu.com/hm.js?0202a37701ab53d1c3a4b778f332cd73"></script>
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="Yao" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Yao</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li><li class="menu-item menu-item-message"><a href="/message/" rel="section"><i class="fa fa fa-comments fa-fw"></i>留言</a></li><li class="menu-item menu-item-books"><a href="/books/" rel="section"><i class="fa  fa-book fa-fw"></i>阅读</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#SPI"><span class="nav-number">1.</span> <span class="nav-text">SPI</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90"><span class="nav-number">2.</span> <span class="nav-text">源码解析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B3%A8%E5%86%8C%E5%AE%9E%E7%8E%B0%E7%B1%BB"><span class="nav-number">2.1.</span> <span class="nav-text">注册实现类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%8E%B7%E5%8F%96%E5%AE%9E%E7%8E%B0%E7%B1%BB"><span class="nav-number">2.2.</span> <span class="nav-text">获取实现类</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#JDBC-%E4%B8%AD%E7%9A%84%E8%BF%90%E7%94%A8"><span class="nav-number">3.</span> <span class="nav-text">JDBC 中的运用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8A%A0%E8%BD%BD"><span class="nav-number">3.1.</span> <span class="nav-text">加载</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8A%A0%E8%BD%BD-1"><span class="nav-number">3.2.</span> <span class="nav-text">加载</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Mr_Yao"
+      src="/images/avatar.gif">
+  <p class="site-author-name" itemprop="name">Mr_Yao</p>
+  <div class="site-description" itemprop="description">一只努力向上的小菜鸟</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">27</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">10</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+
+
+<script type="text/javascript" charset="utf-8" src="/js/tagcloud.js"></script>
+<script type="text/javascript" charset="utf-8" src="/js/tagcanvas.js"></script>
+<div class="widget-wrap">
+    <div id="myCanvasContainer" class="widget tagcloud">
+        <canvas width="250" height="250" id="resCanvas" style="width:100%">
+            <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/JAVA/" rel="tag">JAVA</a><span class="tag-list-count">14</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySql/" rel="tag">MySql</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Mybatis/" rel="tag">Mybatis</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Boot/" rel="tag">Spring Boot</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Tomcat/" rel="tag">Tomcat</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web3/" rel="tag">web3</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/" rel="tag">分布式事务</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E9%93%BE%E8%B7%AF%E8%BF%BD%E8%B8%AA/" rel="tag">分布式链路追踪</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86/" rel="tag">编译原理</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" rel="tag">计算机网络</a><span class="tag-list-count">1</span></li></ul>
+        </canvas>
+    </div>
+</div>
+
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yaocl.cn/2021/07/10/spi/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Mr_Yao">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yao">
+      <meta itemprop="description" content="一只努力向上的小菜鸟">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Java SPI机制 | Yao">
+      <meta itemprop="description" content="SPI 全名：Service Provider Interface，是 JDK 内置的一种服务发现机制，可以将服务接口与服务发现分离以达到解耦的效果。可以提升程序的可扩展性。">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Java SPI机制
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-07-10 16:46:38" itemprop="dateCreated datePublished" datetime="2021-07-10T16:46:38+08:00">2021-07-10</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/JAVA/" itemprop="url" rel="index"><span itemprop="name">JAVA</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>6.5k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>6 分钟</span>
+    </span>
+</div>
+
+            <div class="post-description">SPI 全名：Service Provider Interface，是 JDK 内置的一种服务发现机制，可以将服务接口与服务发现分离以达到解耦的效果。可以提升程序的可扩展性。</div>
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>少侠你现在是否还这样连接数据库</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line">    Class.forName(<span class="string">&quot;com.mysql.jdbc.Driver&quot;</span>);</span><br><span class="line">    Connection connection = DriverManager.getConnection(<span class="string">&quot;URL&quot;</span>,<span class="string">&quot;root&quot;</span>,<span class="string">&quot;password&quot;</span>);</span><br><span class="line">&#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">    e.printStackTrace();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>少侠你知道<code>Class.forName()</code>这句早已经没用了么？Java 官方已经把它优化掉了。想知道怎么优化的么？不要急，且看我慢慢道来。</p>
+<h2 id="SPI"><a href="#SPI" class="headerlink" title="SPI"></a>SPI</h2><p>SPI 全名：Service Provider Interface，是 JDK 内置的一种服务发现机制，可以将服务接口与服务发现分离以达到解耦的效果。可以提升程序的可扩展性。比如 jdbc 只提供了接口，具体的实现由各个运营商解决、经常用的 log 日志类<code>LogFactory</code>，还有阿里的 dubbo 更是将 SPI 运用的淋漓尽致。</p>
+<p>SPI 使用说明：</p>
+<ul>
+<li>在 resources 目录下新建 META-INF/services 目录，并在目录下创建一个文件，文件名字为<code>接口</code>的全限定名，文件内容为<code>实现类</code>的全限定名。</li>
+<li>通过<code>java.util.ServiceLoder</code>类加载实现类。</li>
+<li>SPI 的实现类必须携带一个不带参数的构造方法。</li>
+</ul>
+<p>来个示例</p>
+<p>首先定义一个接口</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Pay</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">pay</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>再来两个实现类</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">AliPay</span> <span class="keyword">implements</span> <span class="title">Pay</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">pay</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;AliPay&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">WeChatPay</span> <span class="keyword">implements</span> <span class="title">Pay</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">pay</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;WeChatPay&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在 resources 目录下新建 META-INF/services 目录，并在目录下创建一个文件，文件名为接口的权限定名<code>com.yao.spi.Pay</code>，文件内容为实现类的全限定名</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">com.yao.spi.AliPay</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2021/07/10/spi/spi.png"></p>
+<p>通过<code>java.util.ServiceLoder</code>获取实现类。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    ServiceLoader&lt;Pay&gt; spiDemoServiceLoader = ServiceLoader.load(Pay.class);</span><br><span class="line"></span><br><span class="line">    Iterator&lt;Pay&gt; payIterator = spiDemoServiceLoader.iterator();</span><br><span class="line">    <span class="keyword">while</span> (payIterator.hasNext())&#123;</span><br><span class="line">        Pay pay = payIterator.next();</span><br><span class="line">        pay.pay();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>看一下结果。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">AliPay</span><br></pre></td></tr></table></figure>
+
+<p>有没有注意到<code>ServiceLoder</code>获取到的是一个列表？这说明什么问题？对的，可以一次初始化多个实现类，只要在文件中声明就可以了。现在再把<code>WechatPay</code>给添加上</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">com.yao.spi.AliPay</span><br><span class="line">com.yao.spi.WeChatPay</span><br></pre></td></tr></table></figure>
+
+<p>看一下运行结果</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">AliPay</span><br><span class="line">WeChatPay</span><br></pre></td></tr></table></figure>
+
+<h2 id="源码解析"><a href="#源码解析" class="headerlink" title="源码解析"></a>源码解析</h2><p>SPI 的功能比较简单，一个<code>ServiceLoader</code>类包含所有的功能。先来看一下有那些主要的属性和内部类的主要属性。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">ServiceLoader</span>&lt;<span class="title">S</span>&gt; <span class="keyword">implements</span> <span class="title">Iterable</span>&lt;<span class="title">S</span>&gt; </span>&#123;</span><br><span class="line">    <span class="comment">//配置文件的路径</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String PREFIX = <span class="string">&quot;META-INF/services/&quot;</span>;</span><br><span class="line">    <span class="comment">//加载的类或接口</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> Class&lt;S&gt; service;</span><br><span class="line">    <span class="comment">//类加载器</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> ClassLoader loader;</span><br><span class="line">    <span class="comment">//已加载的服务类</span></span><br><span class="line">    <span class="keyword">private</span> LinkedHashMap&lt;String, S&gt; providers = <span class="keyword">new</span> LinkedHashMap();</span><br><span class="line">    <span class="comment">//内部类，真正加载类的地方</span></span><br><span class="line">    <span class="keyword">private</span> ServiceLoader&lt;S&gt;.LazyIterator lookupIterator;</span><br><span class="line">    <span class="comment">//内部类</span></span><br><span class="line">    <span class="keyword">private</span> <span class="class"><span class="keyword">class</span> <span class="title">LazyIterator</span> <span class="keyword">implements</span> <span class="title">Iterator</span>&lt;<span class="title">S</span>&gt; </span>&#123;</span><br><span class="line">        <span class="comment">//加载的类或接口</span></span><br><span class="line">        Class&lt;S&gt; service;</span><br><span class="line">        <span class="comment">//类加载器</span></span><br><span class="line">        ClassLoader loader;</span><br><span class="line">        <span class="comment">//保存配置文件中的信息</span></span><br><span class="line">        Enumeration&lt;URL&gt; configs;</span><br><span class="line">        <span class="comment">//保存配置文件中所有的实现类的全限定名</span></span><br><span class="line">        Iterator&lt;String&gt; pending;</span><br><span class="line">        String nextName;</span><br><span class="line">        &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>当看到内部类<code>LazyIterator</code>这个<code>Lazy</code>时，会不会联想到 spring 加载 bean 时的懒加载。这里其实也是一样，当调用<code>load</code>方法时，并不会加载类，只初始化一些内部属性。真正加载实现类是在获取实现类时。<br><img src="/2021/07/10/spi/source.png"></p>
+<p>沿着上面<code>main</code>方法第一次获取实现类的过程一步一步解析，第一次以后获取的过程有兴趣的少侠可以自己走一遍。</p>
+<h3 id="注册实现类"><a href="#注册实现类" class="headerlink" title="注册实现类"></a>注册实现类</h3><p><code>spiDemoServiceLoader.iterator();</code>获取的迭代器是<code>ServiceLoader</code>重写的迭代器，迭代器中的方法都指向了内部类<code>LazyIterator</code></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> Iterator&lt;S&gt; <span class="title">iterator</span><span class="params">()</span> </span>&#123;</span><br><span class="line">       <span class="keyword">return</span> <span class="keyword">new</span> Iterator&lt;S&gt;() &#123;</span><br><span class="line">           Iterator&lt;Entry&lt;String, S&gt;&gt; knownProviders;</span><br><span class="line"></span><br><span class="line">           &#123;</span><br><span class="line">               <span class="keyword">this</span>.knownProviders = ServiceLoader.<span class="keyword">this</span>.providers.entrySet().iterator();</span><br><span class="line">           &#125;</span><br><span class="line"></span><br><span class="line">           <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">hasNext</span><span class="params">()</span> </span>&#123;</span><br><span class="line">               <span class="keyword">return</span> <span class="keyword">this</span>.knownProviders.hasNext() ? <span class="keyword">true</span> : ServiceLoader.<span class="keyword">this</span>.lookupIterator.hasNext();</span><br><span class="line">           &#125;</span><br><span class="line"></span><br><span class="line">           <span class="function"><span class="keyword">public</span> S <span class="title">next</span><span class="params">()</span> </span>&#123;</span><br><span class="line">               <span class="keyword">return</span> <span class="keyword">this</span>.knownProviders.hasNext() ? ((Entry)<span class="keyword">this</span>.knownProviders.next()).getValue() : ServiceLoader.<span class="keyword">this</span>.lookupIterator.next();</span><br><span class="line">           &#125;</span><br><span class="line"></span><br><span class="line">           <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">remove</span><span class="params">()</span> </span>&#123;</span><br><span class="line">               <span class="keyword">throw</span> <span class="keyword">new</span> UnsupportedOperationException();</span><br><span class="line">           &#125;</span><br><span class="line">       &#125;;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+
+<p>当调用<code>payIterator.hasNext()</code>时，调用的是重写迭代器中的</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">hasNext</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">this</span>.knownProviders.hasNext() ? <span class="keyword">true</span> : ServiceLoader.<span class="keyword">this</span>.lookupIterator.hasNext();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>然后会调用内部类<code>LazyIterator</code>中的<code>hasNext()</code>方法</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">hasNext</span><span class="params">()</span> </span>&#123;</span><br><span class="line">     <span class="keyword">if</span> (ServiceLoader.<span class="keyword">this</span>.acc == <span class="keyword">null</span>) &#123;</span><br><span class="line">         <span class="keyword">return</span> <span class="keyword">this</span>.hasNextService();</span><br><span class="line">     &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">         <span class="comment">//省略</span></span><br><span class="line">     &#125;</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+
+<p>接着调用调用内部类<code>LazyIterator</code>中的<code>hasNextService()</code>方法</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">boolean</span> <span class="title">hasNextService</span><span class="params">()</span> </span>&#123;</span><br><span class="line">     <span class="keyword">if</span> (<span class="keyword">this</span>.nextName != <span class="keyword">null</span>) &#123;</span><br><span class="line">         <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">     &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">         <span class="keyword">if</span> (<span class="keyword">this</span>.configs == <span class="keyword">null</span>) &#123;</span><br><span class="line">             <span class="keyword">try</span> </span><br><span class="line">                 <span class="comment">////文件路径</span></span><br><span class="line">                 String var1 = <span class="string">&quot;META-INF/services/&quot;</span> + <span class="keyword">this</span>.service.getName();</span><br><span class="line">                 <span class="comment">//读取配置文件，并将配置文件内容保存到configs</span></span><br><span class="line">                 <span class="keyword">if</span> (<span class="keyword">this</span>.loader == <span class="keyword">null</span>) &#123;</span><br><span class="line">                     <span class="keyword">this</span>.configs = ClassLoader.getSystemResources(var1);</span><br><span class="line">                 &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                     <span class="keyword">this</span>.configs = <span class="keyword">this</span>.loader.getResources(var1);</span><br><span class="line">                 &#125;</span><br><span class="line">             &#125; <span class="keyword">catch</span> (IOException var2) &#123;</span><br><span class="line">                   <span class="comment">//省略</span></span><br><span class="line">             &#125;</span><br><span class="line">         &#125;</span><br><span class="line"></span><br><span class="line">         <span class="keyword">while</span>(<span class="keyword">this</span>.pending == <span class="keyword">null</span> || !<span class="keyword">this</span>.pending.hasNext()) &#123;</span><br><span class="line">           <span class="keyword">if</span> (!<span class="keyword">this</span>.configs.hasMoreElements()) &#123;</span><br><span class="line">                 <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">               &#125;</span><br><span class="line">             <span class="comment">//将文件中的实现类权限定名保存到pending中</span></span><br><span class="line">             <span class="keyword">this</span>.pending = ServiceLoader.<span class="keyword">this</span>.parse(<span class="keyword">this</span>.service, (URL)<span class="keyword">this</span>.configs.nextElement());</span><br><span class="line">             &#125;</span><br><span class="line"></span><br><span class="line">         <span class="keyword">this</span>.nextName = (String)<span class="keyword">this</span>.pending.next();</span><br><span class="line">         <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">         &#125;</span><br><span class="line">       &#125;</span><br></pre></td></tr></table></figure>
+
+<p>第一次到这里时，会将配置文件的信息保存到到内部类中的’configs’属性中，并解析文件将配置的所有实现类保存到内部类中的<code>pending</code>中，但是这里还是没有未初始化类。</p>
+<h3 id="获取实现类"><a href="#获取实现类" class="headerlink" title="获取实现类"></a>获取实现类</h3><p>当调用<code>payIterator.next();</code>时，调用的是重写的</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> S <span class="title">next</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">this</span>.knownProviders.hasNext() ? ((Entry)<span class="keyword">this</span>.knownProviders.next()).getValue() : ServiceLoader.<span class="keyword">this</span>.lookupIterator.next();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>并最终调用到内部类<code>LazyIterator</code>中的<code>next()</code>方法</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> S <span class="title">next</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (ServiceLoader.<span class="keyword">this</span>.acc == <span class="keyword">null</span>) &#123;</span><br><span class="line">         <span class="keyword">return</span> <span class="keyword">this</span>.nextService();</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        PrivilegedAction var1 = <span class="keyword">new</span> PrivilegedAction&lt;S&gt;() &#123;</span><br><span class="line">            <span class="function"><span class="keyword">public</span> S <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">                <span class="keyword">return</span> LazyIterator.<span class="keyword">this</span>.nextService();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;;</span><br><span class="line">        <span class="keyword">return</span> AccessController.doPrivileged(var1, ServiceLoader.<span class="keyword">this</span>.acc);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>然后调用内部类<code>LazyIterator</code>中的<code>nextService()</code>方法</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> S <span class="title">nextService</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (!<span class="keyword">this</span>.hasNextService()) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> NoSuchElementException();</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        String var1 = <span class="keyword">this</span>.nextName;</span><br><span class="line">        <span class="keyword">this</span>.nextName = <span class="keyword">null</span>;</span><br><span class="line">        Class var2 = <span class="keyword">null</span>;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">	         <span class="comment">//初始化实现类</span></span><br><span class="line">            var2 = Class.forName(var1, <span class="keyword">false</span>, <span class="keyword">this</span>.loader);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (ClassNotFoundException var5) &#123;</span><br><span class="line">         </span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//忽略掉后面的代码</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>看到<code>Class.forName()</code>，到此才是初始化实现类。</p>
+<h2 id="JDBC-中的运用"><a href="#JDBC-中的运用" class="headerlink" title="JDBC 中的运用"></a>JDBC 中的运用</h2><p>回到最初的话题，既然<code>Class.forName()</code>没有用了，那JDBC在那优化的呢？首先要知道<code>Class.forName()</code>的作用：强制JVM将com.mysql.jdbc.Driver这个类加载入内存，以便<code>DriverManager</code>类使用，现在既然用不到了，那肯定是在别的地方加载了。那用什么方式加载的？当然是SPI了，要不然前面一大堆东西不是白说了么，哈哈哈哈！看看mysql的jar里<br><img src="/2021/07/10/spi/jdbc.png" alt="MySQL"><br>是不是很熟悉，这不就是SPI规范么。</p>
+<p>OK，来看看加载的过程。<br>既然只需要这一句就可以了</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Connection connection = DriverManager.getConnection(<span class="string">&quot;URL&quot;</span>,<span class="string">&quot;root&quot;</span>,<span class="string">&quot;password&quot;</span>);</span><br></pre></td></tr></table></figure>
+<h3 id="加载"><a href="#加载" class="headerlink" title="加载"></a>加载</h3><p>那就从<code>DriverManager</code>类开始，类加载当然要从静态代码块开始了，看一下<code>DriverManager</code>的静态代码块。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">static</span> &#123;</span><br><span class="line">    loadInitialDrivers();</span><br><span class="line">    println(<span class="string">&quot;JDBC DriverManager initialized&quot;</span>);</span><br><span class="line">    SET_LOG_PERMISSION = <span class="keyword">new</span> SQLPermission(<span class="string">&quot;setLog&quot;</span>);</span><br><span class="line">    DEREGISTER_DRIVER_PERMISSION = <span class="keyword">new</span> SQLPermission(<span class="string">&quot;deregisterDriver&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>进<code>loadInitialDrivers()</code>方法<br><img src="/2021/07/10/spi/jdbc2.png"><br>熟不熟悉？是不是SPI机制？<code>DriverManager</code>在初始化类时，会先利用SPI机制加载数据库的驱动。那又是怎么注册到<code>DriverManager</code>的呢？继续看！</p>
+<h3 id="加载-1"><a href="#加载-1" class="headerlink" title="加载"></a>加载</h3><p>在上面SPI机制中说了，当调用<code>next()</code>方法时会初始化实现类，也就是会初始化<code>Driver</code>类，那就再看<code>Driver</code>类。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Driver</span> <span class="keyword">extends</span> <span class="title">NonRegisteringDriver</span> <span class="keyword">implements</span> <span class="title">java</span>.<span class="title">sql</span>.<span class="title">Driver</span> </span>&#123;</span><br><span class="line">    <span class="keyword">static</span> &#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            java.sql.DriverManager.registerDriver(<span class="keyword">new</span> Driver());</span><br><span class="line">        &#125; <span class="keyword">catch</span> (SQLException E) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> RuntimeException(<span class="string">&quot;Can&#x27;t register driver!&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Driver</span><span class="params">()</span> <span class="keyword">throws</span> SQLException </span>&#123;</span><br><span class="line">        <span class="comment">// Required for Class.forName().newInstance()</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>静态代码块中<code>DriverManager.registerDriver(new Driver());</code>就是将<code>Driver</code>注册到<code>DriverManager</code>。<br>总结一下加载过程：</p>
+<ol>
+<li>DriverManager在静态代码块中利用SPI机制获取到数据库驱动，并初始化Driver</li>
+<li>Driver初始化时首先运行静态代码块将Driver注册到DriverManager</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>请我一杯咖啡吧！</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="/images/wechatpay.png" alt="Mr_Yao 微信">
+        <span>微信</span>
+      </div>
+      <div>
+        <img src="/images/alipay.png" alt="Mr_Yao 支付宝">
+        <span>支付宝</span>
+      </div>
+
+  </div>
+</div>
+
+          <div class="followme">
+  <span>欢迎关注我的其它发布渠道</span>
+
+  <div class="social-list">
+
+      <div class="social-item">
+          <span class="social-link">
+            <span class="icon">
+              <i class="fab fa-weixin"></i>
+            </span>
+
+            <span class="label">微信公众号</span>
+          </span>
+
+          <img class="social-item-img" src="/images/wechat_channel.jpg">
+      </div>
+  </div>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/JAVA/" rel="tag"><i class="fa fa-tag"></i> JAVA</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/06/26/explain/" rel="prev" title="Mysql优化工具explain">
+                  <i class="fa fa-chevron-left"></i> Mysql优化工具explain
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2021/09/23/mybatis-mapper/" rel="next" title="Mybatis中mapper生成代理的过程">
+                  Mybatis中mapper生成代理的过程 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments utterances-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Mr_Yao</span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+<script class="next-config" data-name="utterances" type="application/json">{"enable":true,"repo":"yaocl0/blogtalk","issue_term":"pathname","theme":"github-light"}</script>
+<script src="/js/third-party/comments/utterances.js"></script>
+
+</body>
+</html>

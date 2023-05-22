@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 5.4.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="google-site-verification" content="MBUPLTqs-crTMrXutrEiB0jYb3zBMf1ua13kTbOEqY">
+  <meta name="baidu-site-verification" content="codeva-PHrgdBFiZ7">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"yaocl.cn","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.16.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"style":"flat"},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"utterances","storage":true,"lazyload":false,"nav":null,"activeClass":"utterances"},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/db.json","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="区块链是去中心化、分布式的，每个人都可以自由的参与进来，共同处理区块链中的数据。所谓绝对的自由必然带来绝对的混乱，作为一个巨大的分布式计算网络，">
+<meta property="og:type" content="article">
+<meta property="og:title" content="区块链的灵魂-共识机制">
+<meta property="og:url" content="http://yaocl.cn/2022/07/15/19consensus/index.html">
+<meta property="og:site_name" content="Yao">
+<meta property="og:description" content="区块链是去中心化、分布式的，每个人都可以自由的参与进来，共同处理区块链中的数据。所谓绝对的自由必然带来绝对的混乱，作为一个巨大的分布式计算网络，">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://yaocl.cn/2022/07/15/19consensus/1.png">
+<meta property="og:image" content="http://yaocl.cn/2022/07/15/19consensus/2.png">
+<meta property="og:image" content="http://yaocl.cn/2022/07/15/19consensus/3.jpg">
+<meta property="og:image" content="http://yaocl.cn/2022/07/15/19consensus/4.png">
+<meta property="og:image" content="http://yaocl.cn/2022/07/15/19consensus/5.png">
+<meta property="og:image" content="http://yaocl.cn/2022/07/15/19consensus/6.png">
+<meta property="article:published_time" content="2022-07-15T06:11:40.000Z">
+<meta property="article:modified_time" content="2023-05-22T01:00:59.033Z">
+<meta property="article:author" content="Mr_Yao">
+<meta property="article:tag" content="web3">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://yaocl.cn/2022/07/15/19consensus/1.png">
+
+
+<link rel="canonical" href="http://yaocl.cn/2022/07/15/19consensus/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://yaocl.cn/2022/07/15/19consensus/","path":"2022/07/15/19consensus/","title":"区块链的灵魂-共识机制"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>区块链的灵魂-共识机制 | Yao</title>
+  
+
+  <script src="/js/third-party/analytics/baidu-analytics.js"></script>
+  <script async src="https://hm.baidu.com/hm.js?0202a37701ab53d1c3a4b778f332cd73"></script>
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="Yao" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Yao</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li><li class="menu-item menu-item-message"><a href="/message/" rel="section"><i class="fa fa fa-comments fa-fw"></i>留言</a></li><li class="menu-item menu-item-books"><a href="/books/" rel="section"><i class="fa  fa-book fa-fw"></i>阅读</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8B%9C%E5%8D%A0%E5%BA%AD%E5%B0%86%E5%86%9B%E9%97%AE%E9%A2%98"><span class="nav-number">1.</span> <span class="nav-text">拜占庭将军问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E5%85%B1%E8%AF%86%E6%9C%BA%E5%88%B6%EF%BC%9F"><span class="nav-number">2.</span> <span class="nav-text">什么是共识机制？</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#POW-%E5%B7%A5%E4%BD%9C%E9%87%8F%E8%AF%81%E6%98%8E"><span class="nav-number"></span> <span class="nav-text">POW 工作量证明</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#POS-%E6%9D%83%E7%9B%8A%E8%AF%81%E6%98%8E"><span class="nav-number"></span> <span class="nav-text">POS 权益证明</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#DPOS-%E4%BB%A3%E7%90%86%E6%9D%83%E7%9B%8A%E8%AF%81%E6%98%8E"><span class="nav-number"></span> <span class="nav-text">DPOS 代理权益证明</span></a></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Mr_Yao"
+      src="/images/avatar.gif">
+  <p class="site-author-name" itemprop="name">Mr_Yao</p>
+  <div class="site-description" itemprop="description">一只努力向上的小菜鸟</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">27</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">10</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+
+
+<script type="text/javascript" charset="utf-8" src="/js/tagcloud.js"></script>
+<script type="text/javascript" charset="utf-8" src="/js/tagcanvas.js"></script>
+<div class="widget-wrap">
+    <div id="myCanvasContainer" class="widget tagcloud">
+        <canvas width="250" height="250" id="resCanvas" style="width:100%">
+            <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/JAVA/" rel="tag">JAVA</a><span class="tag-list-count">14</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySql/" rel="tag">MySql</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Mybatis/" rel="tag">Mybatis</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Boot/" rel="tag">Spring Boot</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Tomcat/" rel="tag">Tomcat</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web3/" rel="tag">web3</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/" rel="tag">分布式事务</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E9%93%BE%E8%B7%AF%E8%BF%BD%E8%B8%AA/" rel="tag">分布式链路追踪</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86/" rel="tag">编译原理</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" rel="tag">计算机网络</a><span class="tag-list-count">1</span></li></ul>
+        </canvas>
+    </div>
+</div>
+
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yaocl.cn/2022/07/15/19consensus/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Mr_Yao">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yao">
+      <meta itemprop="description" content="一只努力向上的小菜鸟">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="区块链的灵魂-共识机制 | Yao">
+      <meta itemprop="description" content="区块链是去中心化、分布式的，每个人都可以自由的参与进来，共同处理区块链中的数据。所谓绝对的自由必然带来绝对的混乱，作为一个巨大的分布式计算网络，">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          区块链的灵魂-共识机制
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-07-15 14:11:40" itemprop="dateCreated datePublished" datetime="2022-07-15T14:11:40+08:00">2022-07-15</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/web3/" itemprop="url" rel="index"><span itemprop="name">web3</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>2.3k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>2 分钟</span>
+    </span>
+</div>
+
+            <div class="post-description">区块链是去中心化、分布式的，每个人都可以自由的参与进来，共同处理区块链中的数据。所谓绝对的自由必然带来绝对的混乱，作为一个巨大的分布式计算网络，</div>
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>区块链是去中心化、分布式的，每个人都可以自由的参与进来，共同处理区块链中的数据。所谓绝对的自由必然带来绝对的混乱，作为一个巨大的分布式计算网络，必然有一个绕不开的问题–拜占庭将军问题</p>
+<h3 id="拜占庭将军问题"><a href="#拜占庭将军问题" class="headerlink" title="拜占庭将军问题"></a>拜占庭将军问题</h3><p>拜占庭将军问题（Byzantine failures），是由计算机科学史上的传奇人物莱斯利·兰伯特（Leslie Lamport）提出的。</p>
+<p>拜占庭帝国派出10个将军去攻击敌人，这支敌人可以同时抵御5支拜占庭军队的同时袭击。而这10个拜占庭将军在分开的状态下包围了敌人，并且只能依靠通信兵骑马相互通信来协商进攻意向及进攻时间。但是这些将军们不能确定他们的通信兵中是否有叛徒，叛徒可能擅自改变进攻意向及进攻时间。在这种情况下怎样才能保证同时有多于5支军队攻击，来赢得胜利？</p>
+<p><img src="/2022/07/15/19consensus/1.png"></p>
+<p>放到区块链中，拜占庭将军问题主要针对点对点通信中的分布式系统一致性问题。可以简单的概括为为 <code>在整个网络中的任意节点都无法信任与之通信的对方时，如何能创造出共识基础来进行安全信息的交互而无需担心数据被篡改。</code></p>
+<p>区块链四大核心技术之一的共识机制就是为了解决这个问题。</p>
+<h3 id="什么是共识机制？"><a href="#什么是共识机制？" class="headerlink" title="什么是共识机制？"></a>什么是共识机制？</h3><p>共识，对特定事务具有相同的认识或态度。 共识在我们的生活中无处不在，说一个场景<br>中午你和同事一起吃午饭，你们在讨论怎么吃，然后你出来提议一起点外卖。其他人对你的提议进行投票，如果没有异议那么这就达成了共识。</p>
+<p><img src="/2022/07/15/19consensus/2.png"></p>
+<p>区块链是一个点对点的分布式数据库结构的网络账本。这个账本与传统账本不同，不是由会计或少数几个人来记账，而是人人都可以参与记账。在没有中心机构的情况下，怎么确保别人的数据是正确的？</p>
+<p>这就需要一套规则来规定<code>怎样记账才是有效的</code>，而这一套规则就是共识机制。</p>
+<p>这一套规则主要有两点功能：</p>
+<ul>
+<li>如何记账</li>
+<li>怎样达成共识</li>
+</ul>
+<p>按照这套规则来决定区块链中谁取得区块链中的记账权，也就决定着由谁来产生新的区块。</p>
+<p>共识机制的作用非常大，直接关系到记账权和相关收益的分配。如果把区块链比作一个社会，那共识机制就是这个社会的法律。不夸张地说，共识机制就是区块链的灵魂。</p>
+<p>区块链发展到现在，已经有了多种共识机制，这里主要介绍三种被提及最多的共识机制。</p>
+<p><img src="/2022/07/15/19consensus/3.jpg"></p>
+<h2 id="POW-工作量证明"><a href="#POW-工作量证明" class="headerlink" title="POW 工作量证明"></a>POW 工作量证明</h2><p>POW(Proof of Work)，工作量证明，闻名于比特币，经常提到的<code>挖矿</code>一词也是起源于POW。</p>
+<p><img src="/2022/07/15/19consensus/4.png"></p>
+<p>POW的设计思想是计算一道数学难题，这道题计算过程是复杂的，但是验证过程是简单的。这种特性称之为计算不对称特性。</p>
+<p>比如在比特币中选定为以SHA256算法计算一个目标哈希，使得这个哈希值符合前N位全是0。 举个例子,给出一个字符串”Blockchain”，要求计算一个数字，与给出的字符串拼接起来，进行SHA256后，得到的结果前4位是0，这个数字称作nonce。比如字符串”Blockchain1234”，nonce就是1234。由于结果只能暴力搜索，而且搜索空间非常巨大，作弊几乎不可能。</p>
+<p>只要计算出目标值nonce就会获得记账权，距离上一次打包到现在未确认的交易，就可以一次性将未确认的交易打包并广播了。其他节点在接收到消息后，可以对nonce进行验证。</p>
+<p>简单来说POW就是谁的计算能力越强，计算的越快，获得记账权的概率就越高。每个节点都在同时解题，一旦有一个节点解出来，其余节点解题的过程也就白费了，只能解下一个节点。所以这种证明方式需要消耗大量能源(电力及计算硬件损耗)。</p>
+<p>并且理论上，在POW共识机制保护下，如果一个节点的计算力超过区块链全网的51%，即可对区块链网络进行有效攻击。因此许多基于比特币代码产生的、市值较小的山寨币很容易遭受攻击。这个51%攻击法在「矽谷」这个美剧第四季上曾经上演过这个情节。</p>
+<h2 id="POS-权益证明"><a href="#POS-权益证明" class="headerlink" title="POS 权益证明"></a>POS 权益证明</h2><p>POS(Proof of Stake), 权益证明，最早出现在点点币的创始人Sunny King的白皮书中，它出现的目地就是为了解决POW挖矿出现大量资源浪费的问题。</p>
+<p>在POS中个有<code>币龄</code>的概念，它指的是持币数量乘以持币天数。<br>相较与POW中人人都可以参与，人人都可以计算，POW更像是一种选举机制。节点需要抵押一定的代币，区块链网络会根据抵押代币的币龄，随机选取一个节点，由该节点进行打包区块。 抵押代币的多少，影响着被选中的概率。</p>
+<p><img src="/2022/07/15/19consensus/5.png"></p>
+<p>这种方式不需要每个节点都进行大量的运算，节省了能源。但它同样也有一些缺点。比如，PoS机制中初始的代币分发比较模糊，如果初始代币分发不下去，就很难形成之后的权益证明。并且POS也存在51%的问题，理论上谁能掌握51%的代币，谁就能掌控整个网络，所以，它的去中心化程度要弱一些。</p>
+<h2 id="DPOS-代理权益证明"><a href="#DPOS-代理权益证明" class="headerlink" title="DPOS 代理权益证明"></a>DPOS 代理权益证明</h2><p>DPOS(Delegated Proof of Stake),代理权益证明。最初由Bitshares、Steemit以及 EOS 的创办人Dan Larimer提出，他在区块链项目Bitshares中实现了 DPoS 共识机制。DPOS与POS类似也是一种选举机制，它有点像民主大会。</p>
+<p>其过程是每一个持币人进行投票，选举出一定数量的代表，并由这些代表来打包区块和验证。这些代表节点的权利是相等的。比如，EOS将产生21个主节点，以及100个备用节点。如果有些代表节点不称职，就随时有可能被投票出局。</p>
+<p><img src="/2022/07/15/19consensus/6.png"></p>
+<p>DPOS就像董事会投票，持币者投出一定数量的节点 （董事）。代表按照既定时间表，轮流产生区块，如果代表没能很好的行使权力（比如产生区块），他们会被除名，网络会选出新的代表节点来取代他们。</p>
+<p>DPOS通过选举少数节点来出块记账，确实从网络传输和确认时间上看，大幅提升了性能。但是只有少数的节点出块记账的理念，牺牲了部分去中心化。因为DPOS机制的设计并不能保证一定有足额的真实的区块生产者，因为一个人或一个实体，可能控制着多个节点。如果节点的持有人相互串通，将进一步形成巨头垄断，这和区块链思想更是南辕北辙。这也是为什么V神怒怼DPOS的原因。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>请我一杯咖啡吧！</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="/images/wechatpay.png" alt="Mr_Yao 微信">
+        <span>微信</span>
+      </div>
+      <div>
+        <img src="/images/alipay.png" alt="Mr_Yao 支付宝">
+        <span>支付宝</span>
+      </div>
+
+  </div>
+</div>
+
+          <div class="followme">
+  <span>欢迎关注我的其它发布渠道</span>
+
+  <div class="social-list">
+
+      <div class="social-item">
+          <span class="social-link">
+            <span class="icon">
+              <i class="fab fa-weixin"></i>
+            </span>
+
+            <span class="label">微信公众号</span>
+          </span>
+
+          <img class="social-item-img" src="/images/wechat_channel.jpg">
+      </div>
+  </div>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/web3/" rel="tag"><i class="fa fa-tag"></i> web3</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/06/19/18web3/" rel="prev" title="认识区块链和web3.0">
+                  <i class="fa fa-chevron-left"></i> 认识区块链和web3.0
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2022/08/20/20stream/" rel="next" title="Java8中的Stream流">
+                  Java8中的Stream流 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments utterances-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Mr_Yao</span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+<script class="next-config" data-name="utterances" type="application/json">{"enable":true,"repo":"yaocl0/blogtalk","issue_term":"pathname","theme":"github-light"}</script>
+<script src="/js/third-party/comments/utterances.js"></script>
+
+</body>
+</html>
