@@ -1,5 +1,5 @@
-http://yaocl.cn/message/index.html
 http://yaocl.cn/categories/index.html
+http://yaocl.cn/message/index.html
 http://yaocl.cn/ss/index.html
 http://yaocl.cn/tags/index.html
 http://yaocl.cn/2021/11/15/type-erasure/
