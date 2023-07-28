@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>http://yaocl.cn/2023/05/28/29mvcc/</loc>
+    <loc>http://yaocl.cn/2023/07/26/28zerocopy/</loc>
     
     <lastmod>2023-07-28</lastmod>
     
@@ -11,7 +11,7 @@
   </url>
   
   <url>
-    <loc>http://yaocl.cn/2023/07/26/28zerocopy/</loc>
+    <loc>http://yaocl.cn/2023/05/28/29mvcc/</loc>
     
     <lastmod>2023-07-28</lastmod>
     
@@ -38,7 +38,7 @@
   </url>
   
   <url>
-    <loc>http://yaocl.cn/2022/04/05/springbootjar/</loc>
+    <loc>http://yaocl.cn/2021/09/28/tcp34/</loc>
     
     <lastmod>2023-05-19</lastmod>
     
@@ -47,7 +47,7 @@
   </url>
   
   <url>
-    <loc>http://yaocl.cn/2021/09/28/tcp34/</loc>
+    <loc>http://yaocl.cn/2022/04/05/springbootjar/</loc>
     
     <lastmod>2023-05-19</lastmod>
     
@@ -83,7 +83,7 @@
   </url>
   
   <url>
-    <loc>http://yaocl.cn/2021/02/13/aqs1/</loc>
+    <loc>http://yaocl.cn/2021/03/03/aqs2/</loc>
     
     <lastmod>2023-05-19</lastmod>
     
@@ -92,7 +92,7 @@
   </url>
   
   <url>
-    <loc>http://yaocl.cn/2021/03/03/aqs2/</loc>
+    <loc>http://yaocl.cn/2021/02/13/aqs1/</loc>
     
     <lastmod>2023-05-19</lastmod>
     
@@ -119,7 +119,7 @@
   </url>
   
   <url>
-    <loc>http://yaocl.cn/2021/12/29/hot-loading/</loc>
+    <loc>http://yaocl.cn/2021/04/15/introspector/</loc>
     
     <lastmod>2023-05-19</lastmod>
     
@@ -128,7 +128,7 @@
   </url>
   
   <url>
-    <loc>http://yaocl.cn/2021/04/15/introspector/</loc>
+    <loc>http://yaocl.cn/2021/12/29/hot-loading/</loc>
     
     <lastmod>2023-05-19</lastmod>
     
@@ -333,14 +333,14 @@
   </url>
   
   <url>
-    <loc>http://yaocl.cn/tags/%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86/</loc>
+    <loc>http://yaocl.cn/tags/JAVA/</loc>
     <lastmod>2023-07-28</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>http://yaocl.cn/tags/JAVA/</loc>
+    <loc>http://yaocl.cn/tags/%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86/</loc>
     <lastmod>2023-07-28</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -389,14 +389,14 @@
   </url>
   
   <url>
-    <loc>http://yaocl.cn/tags/Spring-Boot/</loc>
+    <loc>http://yaocl.cn/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/</loc>
     <lastmod>2023-07-28</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>http://yaocl.cn/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/</loc>
+    <loc>http://yaocl.cn/tags/Spring-Boot/</loc>
     <lastmod>2023-07-28</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -419,14 +419,14 @@
   </url>
   
   <url>
-    <loc>http://yaocl.cn/categories/%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86/</loc>
+    <loc>http://yaocl.cn/categories/JAVA/</loc>
     <lastmod>2023-07-28</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>http://yaocl.cn/categories/JAVA/</loc>
+    <loc>http://yaocl.cn/categories/%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86/</loc>
     <lastmod>2023-07-28</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -454,21 +454,7 @@
   </url>
   
   <url>
-    <loc>http://yaocl.cn/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA/</loc>
-    <lastmod>2023-07-28</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
     <loc>http://yaocl.cn/categories/MySql/</loc>
-    <lastmod>2023-07-28</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>http://yaocl.cn/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA/JAVA/</loc>
     <lastmod>2023-07-28</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
