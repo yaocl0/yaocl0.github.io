@@ -1,0 +1,307 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>跨越性能瓶颈：Layer2技术为区块链解决可扩展性问题 | Mr_Yao的驿站</title><meta name="author" content="Mr_Yao"><meta name="copyright" content="Mr_Yao"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="区块链有个著名的”不可能三角”问题，即一条区块链的发展很难兼顾安全、去中心化和可拓展性。  以太坊举例，虽然在去中心化和安全方面做的已经足够好，但随着用户越来越多，其交易速度变慢、交易手续费高、用户体验恶化是一直以来有待解决的问题。尤其是在 17 年出现了一款非常火爆的 Dapp 应用叫加密猫，造成以太坊主网大规模的拥堵。造成拥堵的原因是以太坊当时的 TPS 只有 15，这意味着以太坊每秒只能处理">
+<meta property="og:type" content="article">
+<meta property="og:title" content="跨越性能瓶颈：Layer2技术为区块链解决可扩展性问题">
+<meta property="og:url" content="http://yaocl.cn/2023/06/06/30layer2/index.html">
+<meta property="og:site_name" content="Mr_Yao的驿站">
+<meta property="og:description" content="区块链有个著名的”不可能三角”问题，即一条区块链的发展很难兼顾安全、去中心化和可拓展性。  以太坊举例，虽然在去中心化和安全方面做的已经足够好，但随着用户越来越多，其交易速度变慢、交易手续费高、用户体验恶化是一直以来有待解决的问题。尤其是在 17 年出现了一款非常火爆的 Dapp 应用叫加密猫，造成以太坊主网大规模的拥堵。造成拥堵的原因是以太坊当时的 TPS 只有 15，这意味着以太坊每秒只能处理">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://yaocl.cn/2023/06/06/30layer2/2.png">
+<meta property="article:published_time" content="2023-06-06T08:37:29.000Z">
+<meta property="article:modified_time" content="2023-08-22T02:00:49.375Z">
+<meta property="article:author" content="Mr_Yao">
+<meta property="article:tag" content="区块链">
+<meta property="article:tag" content="layer2">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://yaocl.cn/2023/06/06/30layer2/2.png"><link rel="shortcut icon" href="/"><link rel="canonical" href="http://yaocl.cn/2023/06/06/30layer2/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//hm.baidu.com"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><meta name="google-site-verification" content="MBUPLTqs-crTMrXutrEiB0jYb3zBMf1ua13kTbOEqY"/><meta name="baidu-site-verification" content="codeva-PHrgdBFiZ7"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?0202a37701ab53d1c3a4b778f332cd73";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/db.json","preload":false,"top_n_per_article":1,"unescape":false,"languages":{"hits_empty":"找不到您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: {"defaultEncoding":2,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"簡"},
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '跨越性能瓶颈：Layer2技术为区块链解决可扩展性问题',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: undefined,
+  isToc: true,
+  postUpdate: '2023-08-22 10:00:49'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = (url,id = false) => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      if (id) link.id = id
+      link.onerror = reject
+      link.onload = link.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        link.onload = link.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><link rel="stylesheet" href="/css/custom.css"><meta name="generator" content="Hexo 5.4.0"><link rel="alternate" href="/atom.xml" title="Mr_Yao的驿站" type="application/atom+xml">
+</head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/avatar.gif" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">34</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">16</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">9</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/books/"><i class="fa-fw fa  fa-book"></i><span> 阅读</span></a></div><div class="menus_item"><a class="site-page" href="/message/"><i class="fa-fw fa fa fa-comments"></i><span> 留言</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://yaocl.cn/2023/06/06/30layer2/2.png')"><nav id="nav"><span id="blog-info"><a href="/" title="Mr_Yao的驿站"><span class="site-name">Mr_Yao的驿站</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/books/"><i class="fa-fw fa  fa-book"></i><span> 阅读</span></a></div><div class="menus_item"><a class="site-page" href="/message/"><i class="fa-fw fa fa fa-comments"></i><span> 留言</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">跨越性能瓶颈：Layer2技术为区块链解决可扩展性问题</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2023-06-06T08:37:29.000Z" title="发表于 2023-06-06 16:37:29">2023-06-06</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-08-22T02:00:49.375Z" title="更新于 2023-08-22 10:00:49">2023-08-22</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E5%8C%BA%E5%9D%97%E9%93%BE/">区块链</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="跨越性能瓶颈：Layer2技术为区块链解决可扩展性问题"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><p>区块链有个著名的”不可能三角”问题，即一条区块链的发展很难兼顾安全、去中心化和可拓展性。</p>
+<p><img src="/2023/06/06/30layer2/1.png"></p>
+<p>以太坊举例，虽然在去中心化和安全方面做的已经足够好，但随着用户越来越多，其交易速度变慢、交易手续费高、用户体验恶化是一直以来有待解决的问题。尤其是在 17 年出现了一款非常火爆的 Dapp 应用叫加密猫，造成以太坊主网大规模的拥堵。造成拥堵的原因是以太坊当时的 TPS 只有 15，这意味着以太坊每秒只能处理 15 笔交易，如此低的 TPS 严重限制了区块链应用的大规模落地。</p>
+<p>想提升公链的可扩展性，有两种方式：</p>
+<p>1、链上扩容：</p>
+<p>扩展主网本身（Layer 1）称为链上扩容方案。主要通过提高区块链本身的交易容量来实现扩容。比如早期对比特币进行区块大小调整，隔离见证的引入，以太坊 2.0 的转 POS 和分片机制。但是 Layer 1 的扩容要么进展缓慢，要么对性能的提升没有质的变化。</p>
+<p>2、链下扩容：</p>
+<p>链下扩容是在底层区块链 Layer 1 上构建一个扩展层 Layer 2，通过将一部分交易或计算迁移到区块链外的第二层网络来提高可扩展性和效率。  Layer1 来保证安全和去中心化，绝对可靠、可信；它能做到全球共识，并作为“加密法院”，通过智能合约设计的规则进行仲裁，以经济激励的形式将信任传递到 Layer2 上，而 Layer2 追求极致的性能，它只能做到局部共识，但是能够满足各类商业场景的需求。</p>
+<p><img src="/2023/06/06/30layer2/2.png"></p>
+<h2 id="常见的区块链-Layer-2-技术方案"><a href="#常见的区块链-Layer-2-技术方案" class="headerlink" title="常见的区块链 Layer 2 技术方案"></a>常见的区块链 Layer 2 技术方案</h2><h3 id="状态通道（State-Channels）"><a href="#状态通道（State-Channels）" class="headerlink" title="状态通道（State Channels）"></a>状态通道（State Channels）</h3><p>状态通道是一种基于区块链的链下交易方案，通过在链上锁定资金，交易双方在链下构建一个通道，实现链下的快速交易。其原理是将交易数据限制在链下的通道内，并只在必要时将最终结果提交到主链上。状态通道可以极大地提高交易吞吐量，并降低交易成本。</p>
+<p>其实可以把状态通道理解成一个执行特殊操作的智能合约，一个专门建立双向通道，在一定条件下进行<code>状态保持</code>的智能合约。可以将状态通道中的执行过程作为<code>原子操作</code>，在执行完成这个原子操作后，将最终结果上链。</p>
+<p><img src="/2023/06/06/30layer2/3.png"></p>
+<p>比如建立价值为 100 美元的支付通道，首先进行资金锁定，一旦锁定完成，交易者双方可互相发送状态更新来实现转账，无需与主链进行交互，只要双方的余额都还为正值即可。一旦有一方想要停止使用支付通道，可以执行 “退出” 操作，将最后的状态更新提交至主链，结算下来的余额会退给发起支付通道的两方。主链可以通过核实签名和最后结余来验证状态更新的有效性，从而防止交易双方使用无效状态来退出支付通道,保证退出机制的安全性。</p>
+<p>状态通道存在一些缺点：</p>
+<ol>
+<li>“退出” 模式存在一个问题，即主链无法验证支付通道是否提交了全部交易，也就是说，在提交了状态更新之后是否不再出现新的状态更新。</li>
+<li>状态通道的第二个缺点就是低资金利用率。由于资金流动性无法扩容，当众多资金锁在一个状态通道里，只能用状态通道转发的话，这个效率是非常低下。</li>
+</ol>
+<p>应用代表：</p>
+<ul>
+<li>比特币中的闪电网络</li>
+<li>以太坊中的的 Raiden Network。</li>
+</ul>
+<h3 id="侧链（Sidechains）"><a href="#侧链（Sidechains）" class="headerlink" title="侧链（Sidechains）"></a>侧链（Sidechains）</h3><p>侧链是一种独立于主链的区块链网络，通过与主链进行资产锁定和解锁的方式实现与主链的互操作性。它们通过“双向锚定” （Two-Way Pegging）来建立关联，实现主链与侧链之间价值的双向转移。侧链的思路可以简单的理解为在主链锁定资产，在侧链派生相应资产；当资产在侧链完成应用后要转回主链时，从侧链销毁资产，并在主链解锁。侧链可以承载大量的交易，并在需要时将交易结果提交到主链上。</p>
+<p><img src="/2023/06/06/30layer2/4.png"></p>
+<p>优点：</p>
+<ul>
+<li>不受主链 TPS 限制</li>
+<li>侧链合约运行的手续费大大降低，对小金额玩家以及新玩家较友好</li>
+</ul>
+<p>缺点：</p>
+<ul>
+<li>中心化威胁：通过第三方公证人或中继者进行验证，牺牲了部分去中心化特性</li>
+</ul>
+<p>项目代表：</p>
+<ul>
+<li>Injective Protocol（注射协议）：首个 Layer 2 的衍生品 dex</li>
+<li>Rootstock（RSK）（砧木）：第一条比特币侧链</li>
+</ul>
+<h3 id="等离子体（Plasma）"><a href="#等离子体（Plasma）" class="headerlink" title="等离子体（Plasma）"></a>等离子体（Plasma）</h3><p>Plasma 曾是 Vitalik 认为大有可为的一个解决方案，由 Vitalik Buterin 和 Joseph Poon 在 2017 年共同提出。可以将 Plasma 视为以太坊的原生侧链，使用智能合约和 Merkle 树的组合来创建无限的子链分支。这些子链是以太坊主链的较小副本，具有自己的共识机制。</p>
+<p>Plasma 是一种设计模式，它允许链外消息驱动链上资产的转移。它通过将交易吞吐量转移到 Plasma 链来实现对根链的扩展。</p>
+<p>Plasma 在一个树形结构上组装区块链。最底层的是根区块链，根区块链之上是第一级子链——Plasma 链。在第一级链上，可进一步分支出二级和三级 Plasma 链。上一级 Plasma 链称为下一级链的<code>父链</code>。</p>
+<p>区块的承诺流向下，出口能被提交给任何父链，最终在根链上被执行。理解为子链的交易、状态等运算可以向下层层递交，最终在根链上落定和执行。</p>
+<p><img src="/2023/06/06/30layer2/5.png"></p>
+<p>优点：</p>
+<ul>
+<li>相对安全：即使链下环境崩塌，也能从主链上提取交易结果</li>
+<li>操作快、交易费用低：因为与主链的交互较少</li>
+</ul>
+<p>缺点：</p>
+<ul>
+<li>不具备主链的数据可用性：给 Layer 1 返回的仅有交易结果的证明、没有详细的交易信息，主链无法还原交易</li>
+<li>退出期长：用户需要从主链上提取资金，需要等待挑战期过去。</li>
+<li>拓展困难：技术框架限定了子链的数据结构</li>
+</ul>
+<p>项目代表：</p>
+<ul>
+<li>Loom Network：第一个 Plasma 产品实现</li>
+<li>Polygon</li>
+</ul>
+<h3 id="聚合链（Rollups）"><a href="#聚合链（Rollups）" class="headerlink" title="聚合链（Rollups）"></a>聚合链（Rollups）</h3><p>Rollups 是一种将大量交易聚合到单个链上进行处理的技术方案，其本质是将原本分布在区块中的大量交易数据，<code>打包成一笔集合的交易</code>，发布到链上。Roll Up 实际上是一条侧链，因此它会生成区块，并且将这些区块的快照发送到主链上。不过，Roll Up 上的运营者是无需信任的。也就是说，Roll Up 假定运营者可以在任何时候做出停止出块、生成无效块、隐瞒数据等恶意行为。</p>
+<p>主流的 Rollup 技术可以分为两类：ZkRollup 和 Optimistic Rollup。</p>
+<p><em><strong>ZkRollup</strong></em>：基于<a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s?__biz=MzU2NjMwMTkzMw==&mid=2247484540&idx=1&sn=af2d2f3711b712952b8e4bb8278ff41f&chksm=fcafc1fecbd848e8673bd61edd693ad60f2bbd6334915e825d95551987b5df872cc4437edadb#rd">零知识证明</a>的 Layer2 扩容方案，采用有效性验证方法(VP)，默认所有交易都是不诚实的，只有通过有效性验证才会被接受。ZkRollup 在链下进行复杂的计算和证明的生成，链上进行证明的校验并存储部分数据保证数据可用性。</p>
+<p>优点：</p>
+<ul>
+<li>安全性：牺牲了等待时间来换取较好的安全性</li>
+<li>上链效率高：将多笔交易打包操作，节约时间和 gas fee</li>
+</ul>
+<p>缺点：</p>
+<ul>
+<li>验证效率低：较长的等待期，任何交易在等待期不会被确认，也无法从主链提取资金</li>
+<li>交易压缩率相对较低</li>
+</ul>
+<p>项目代表：</p>
+<ul>
+<li>路印</li>
+<li>ZKSync：旨在为以太坊带来 Visa 级别、每秒数千笔交易的吞吐量</li>
+</ul>
+<p><em><strong>Optimistic Rollup</strong></em>：采用的是欺诈性证明（Fraud Proof），它趋于相信操作者提交的数据都是真实的（乐观假设，大家都是好人）。但保险起见，需要操作者质押一定资产作为保证金，且在上链前留出两周的挑战期，任何人都可以在此期间挑战其真实性并发布欺诈证明，一旦挑战成功，质押金将会被没收，挑战者会获得奖励，且回滚交易细节。因此，从概率角度防止作恶行为。</p>
+<p>优点：</p>
+<ul>
+<li>高度的去中心化</li>
+<li>隐私性好：零知识证明不会透露任何交易细节</li>
+<li>上链效率高：一次性提交多笔操作的结果，节约时间和 gas fee</li>
+<li>验证效率高：无需等待期，快速完成资产取出动作</li>
+<li>安全性极高：zk 技术保证了提交给主链的数据真实有效，同时主链可随时还原侧链发生的交易细节（即拥有主链的数据可用性），因此拥有以太坊级别的安全性</li>
+</ul>
+<p>缺点：</p>
+<ul>
+<li>技术开发难度大</li>
+<li>难兼容不同智能合约</li>
+<li>需要大量运算</li>
+</ul>
+<p>项目代表：</p>
+<ul>
+<li>Fuel：Optimistic Rollup（乐观汇总）概念提出者所在团队研发</li>
+<li>Synthetix：DeFi 巨头的 Layer2 扩容选择</li>
+</ul>
+<h2 id="结尾"><a href="#结尾" class="headerlink" title="结尾"></a>结尾</h2><p>经过数年发展，Layer 2 扩容诞生了很多方案，在以太坊发展早期，以太坊创始人 V 神都曾认为侧链、Plasma 技术是解决区块链扩容问题的最佳方案。但时间和实践都证明，在 DeFi 大爆发的背景下，侧链、状态通道、Plasma 等 Layer 2 扩容方案都无法满足市场的要求，发展到现在，Rollup 成为了目前最有希望的方案。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="http://yaocl.cn">Mr_Yao</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://yaocl.cn/2023/06/06/30layer2/">http://yaocl.cn/2023/06/06/30layer2/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://yaocl.cn" target="_blank">Mr_Yao的驿站</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E5%8C%BA%E5%9D%97%E9%93%BE/">区块链</a><a class="post-meta__tags" href="/tags/layer2/">layer2</a></div><div class="post_share"><div class="social-share" data-image="https://yaocl.cn/2023/06/06/30layer2/2.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><div class="post-reward"><div class="reward-button"><i class="fas fa-qrcode"></i> 其他发布渠道</div><div class="reward-main"><ul class="reward-all"><li class="reward-item"><a href="/img/wechat_channel.jpg" target="_blank"><img class="post-qr-code-img" src="/img/wechat_channel.jpg" alt="微信公众号"/></a><div class="post-qr-code-desc">微信公众号</div></li></ul></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2023/07/26/28zerocopy/" title="搞明白什么是零拷贝，就是这么简单"><img class="cover" src="https://yaocl.cn/2023/07/26/28zerocopy/5.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">搞明白什么是零拷贝，就是这么简单</div></div></a></div><div class="next-post pull-right"><a href="/2023/05/28/29mvcc/" title="MVCC如何应对MySQL并发问题"><img class="cover" src="https://yaocl.cn/2023/05/28/29mvcc/3.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">MVCC如何应对MySQL并发问题</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2025/01/05/32Solana/" title="Solana：重塑区块链生态的高速革命"><img class="cover" src="https://file.crazywong.com/gh/jerryc127/CDN/img/material-5.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2025-01-05</div><div class="title">Solana：重塑区块链生态的高速革命</div></div></a></div></div></div><hr/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div id="utterances-wrap"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/avatar.gif" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Mr_Yao</div><div class="author-info__description">一只努力向上的小菜鸟</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">34</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">16</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">9</div></a></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B8%B8%E8%A7%81%E7%9A%84%E5%8C%BA%E5%9D%97%E9%93%BE-Layer-2-%E6%8A%80%E6%9C%AF%E6%96%B9%E6%A1%88"><span class="toc-number">1.</span> <span class="toc-text">常见的区块链 Layer 2 技术方案</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%8A%B6%E6%80%81%E9%80%9A%E9%81%93%EF%BC%88State-Channels%EF%BC%89"><span class="toc-number">1.1.</span> <span class="toc-text">状态通道（State Channels）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BE%A7%E9%93%BE%EF%BC%88Sidechains%EF%BC%89"><span class="toc-number">1.2.</span> <span class="toc-text">侧链（Sidechains）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AD%89%E7%A6%BB%E5%AD%90%E4%BD%93%EF%BC%88Plasma%EF%BC%89"><span class="toc-number">1.3.</span> <span class="toc-text">等离子体（Plasma）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%81%9A%E5%90%88%E9%93%BE%EF%BC%88Rollups%EF%BC%89"><span class="toc-number">1.4.</span> <span class="toc-text">聚合链（Rollups）</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BB%93%E5%B0%BE"><span class="toc-number">2.</span> <span class="toc-text">结尾</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2025/01/05/32Solana/" title="Solana：重塑区块链生态的高速革命"><img src="https://file.crazywong.com/gh/jerryc127/CDN/img/material-5.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Solana：重塑区块链生态的高速革命"/></a><div class="content"><a class="title" href="/2025/01/05/32Solana/" title="Solana：重塑区块链生态的高速革命">Solana：重塑区块链生态的高速革命</a><time datetime="2025-01-05T07:22:18.000Z" title="发表于 2025-01-05 15:22:18">2025-01-05</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/08/06/31innodb/" title="InnoDB 存储引擎是如何管理和存储数据"><img src="https://yaocl.cn/2023/08/06/31innodb/12.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="InnoDB 存储引擎是如何管理和存储数据"/></a><div class="content"><a class="title" href="/2023/08/06/31innodb/" title="InnoDB 存储引擎是如何管理和存储数据">InnoDB 存储引擎是如何管理和存储数据</a><time datetime="2023-08-06T08:41:39.000Z" title="发表于 2023-08-06 16:41:39">2023-08-06</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/07/26/28zerocopy/" title="搞明白什么是零拷贝，就是这么简单"><img src="https://yaocl.cn/2023/07/26/28zerocopy/5.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="搞明白什么是零拷贝，就是这么简单"/></a><div class="content"><a class="title" href="/2023/07/26/28zerocopy/" title="搞明白什么是零拷贝，就是这么简单">搞明白什么是零拷贝，就是这么简单</a><time datetime="2023-07-26T14:09:23.000Z" title="发表于 2023-07-26 22:09:23">2023-07-26</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/06/06/30layer2/" title="跨越性能瓶颈：Layer2技术为区块链解决可扩展性问题"><img src="https://yaocl.cn/2023/06/06/30layer2/2.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="跨越性能瓶颈：Layer2技术为区块链解决可扩展性问题"/></a><div class="content"><a class="title" href="/2023/06/06/30layer2/" title="跨越性能瓶颈：Layer2技术为区块链解决可扩展性问题">跨越性能瓶颈：Layer2技术为区块链解决可扩展性问题</a><time datetime="2023-06-06T08:37:29.000Z" title="发表于 2023-06-06 16:37:29">2023-06-06</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/05/28/29mvcc/" title="MVCC如何应对MySQL并发问题"><img src="https://yaocl.cn/2023/05/28/29mvcc/3.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="MVCC如何应对MySQL并发问题"/></a><div class="content"><a class="title" href="/2023/05/28/29mvcc/" title="MVCC如何应对MySQL并发问题">MVCC如何应对MySQL并发问题</a><time datetime="2023-05-28T11:43:33.000Z" title="发表于 2023-05-28 19:43:33">2023-05-28</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url('https://yaocl.cn/2023/06/06/30layer2/2.png')"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2025 By Mr_Yao</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="translateLink" type="button" title="简繁转换">繁</button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/tw_cn.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"><script>function loadUtterances () {
+  let ele = document.createElement('script')
+  ele.setAttribute('id', 'utterances_comment')
+  ele.setAttribute('src', 'https://utteranc.es/client.js')
+  ele.setAttribute('repo', 'yaocl0/blogtalk')
+  ele.setAttribute('issue-term', 'pathname')
+  let nowTheme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'photon-dark' : 'github-light'
+  ele.setAttribute('theme', nowTheme)
+  ele.setAttribute('crossorigin', 'anonymous')
+  ele.setAttribute('async', 'true')
+  document.getElementById('utterances-wrap').insertAdjacentElement('afterbegin',ele)
+}
+
+function utterancesTheme (theme) {
+  const iframe = document.querySelector('.utterances-frame')
+  if (iframe) {
+    const theme = theme === 'dark' ? 'photon-dark' : 'github-light'
+    const message = {
+      type: 'set-theme',
+      theme: theme
+    };
+    iframe.contentWindow.postMessage(message, 'https://utteranc.es');
+  }
+}
+
+btf.addModeChange('utterances', utterancesTheme)
+
+if ('Utterances' === 'Utterances' || !false) {
+  if (false) btf.loadComment(document.getElementById('utterances-wrap'), loadUtterances)
+  else loadUtterances()
+} else {
+  function loadOtherComment () {
+    loadUtterances()
+  }
+}</script></div><script defer="defer" id="fluttering_ribbon" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-fluttering-ribbon.min.js"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div class="no-result" id="local-search-results"></div><div id="local-search-stats-wrap"></div></div></div><div id="search-mask"></div><script src="/js/search/local-search.js"></script></div></div></body></html>
